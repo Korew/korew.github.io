@@ -1,0 +1,19 @@
+{
+  "nav": {
+    "home": "Home",
+    "contact": "Contact"
+  },
+  "footer": {
+    "copyright": "© {year}. All rights reserved."
+  },
+  "pages": {
+    "home": {
+      "title": "Home Page",
+      "description": "Welcome to the home page."
+    },
+    "contact": {
+      "title": "Contact Page",
+      "description": "Get in touch with us."
+    }
+  }
+}
