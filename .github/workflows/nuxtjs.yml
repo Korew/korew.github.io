@@ -63,6 +63,9 @@ jobs:
         run: rm -rf .nuxt .output
       - name: Static HTML export with Nuxt
         run: pnpm run generate
+        env:
+          NODE_ENV: production
+          NITRO_PRESET: static
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
