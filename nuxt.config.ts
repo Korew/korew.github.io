@@ -2,14 +2,7 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-
-  nitro: {
-    prerender: {
-      failOnError: false,
-      crawlLinks: false,
-      routes: ['/'],
-    },
-  },
+  ssr: false,
 
   modules: [
     '@nuxt/a11y',
