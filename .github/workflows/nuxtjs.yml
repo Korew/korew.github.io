@@ -52,9 +52,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            dist
+            .output
             .nuxt
-          key: ${{ runner.os }}-nuxt-build-${{ hashFiles('dist') }}
+          key: ${{ runner.os }}-nuxt-build-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-nuxt-build-
       - name: Install dependencies
@@ -64,7 +64,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist
+          path: ./.output/public
 
   # Deployment job
   deploy:
