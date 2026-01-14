@@ -2,7 +2,6 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  ssr: false,
 
   modules: [
     '@nuxt/a11y',
@@ -34,6 +33,7 @@ export default defineNuxtConfig({
       { code: 'en', name: 'English', file: 'en.json' },
       { code: 'uk', name: 'Українська', file: 'uk.json' },
     ],
+    langDir: './locales',
     strategy: 'prefix_except_default',
   },
 })
