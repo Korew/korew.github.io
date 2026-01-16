@@ -12,12 +12,11 @@
 
 <style scoped>
 .page {
-  display: flex;
-  flex-direction: column;
-  min-height: 100dvh;
+  @apply flex flex-col;
+  @apply min-h-dvh;
 }
 
 .main {
-  flex: 1;
+  @apply flex-grow;
 }
 </style>
