@@ -2,19 +2,21 @@
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineNuxtConfig({
-  compatibilityDate: '2025-07-15',
-  devtools: { enabled: false },
-
   modules: [
     '@nuxt/a11y',
     '@nuxt/eslint',
     '@nuxt/hints',
+    '@nuxt/icon',
     '@nuxt/image',
     '@nuxt/scripts',
     '@nuxt/test-utils',
     '@nuxt/ui',
     '@nuxtjs/i18n',
   ],
+  devtools: { enabled: false },
+
+  css: ['./app/assets/css/main.css'],
+  compatibilityDate: '2025-07-15',
 
   vite: {
     plugins: [tailwindcss()],
@@ -43,5 +45,14 @@ export default defineNuxtConfig({
     strategy: 'prefix_except_default',
   },
 
-  css: ['./app/assets/css/main.css'],
+  icon: {
+    fallbackToApi: false,
+    clientBundle: {
+      icons: [
+        'simple-icons:github',
+        'simple-icons:instagram',
+        'simple-icons:telegram',
+      ],
+    },
+  },
 })

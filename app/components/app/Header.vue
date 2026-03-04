@@ -1,12 +1,20 @@
 <template>
   <header class="header">
     <div class="header__title">
-      <div class="header__name">{{ t('Roman Korenchuk') }}</div>
-      <div class="header__role">{{ t('Frontend Developer') }}</div>
+      <div class="header__name">
+        {{ t('Roman Korenchuk') }}
+      </div>
+      <div class="header__role">
+        {{ t('Frontend Developer') }}
+      </div>
     </div>
     <nav class="nav">
-      <NuxtLinkLocale to="/">{{ t('nav.home') }}</NuxtLinkLocale>
-      <NuxtLinkLocale to="/contact">{{ t('nav.contact') }}</NuxtLinkLocale>
+      <NuxtLinkLocale to="/">
+        {{ t('nav.home') }}
+      </NuxtLinkLocale>
+      <NuxtLinkLocale to="/contact">
+        {{ t('nav.contact') }}
+      </NuxtLinkLocale>
     </nav>
     <div class="language-switcher">
       <button
@@ -21,7 +29,7 @@
   </header>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const { t, locale, locales, setLocale } = useI18n()
 </script>
 

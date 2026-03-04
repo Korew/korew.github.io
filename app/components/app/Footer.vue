@@ -1,17 +1,20 @@
 <template>
   <footer class="footer">
-    {{ t('footer.copyright', { year }) }}
+    <p>{{ t('footer.copyright', { year }) }}</p>
+    <SocialLinks />
   </footer>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const { t } = useI18n()
 const year = new Date().getFullYear()
 </script>
 
 <style scoped>
 @reference "tailwindcss";
+
 .footer {
   @apply p-4;
+  @apply flex items-center justify-between gap-4;
 }
 </style>
