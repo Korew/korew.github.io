@@ -5,6 +5,7 @@ const siteUrl = import.meta.env.NUXT_PUBLIC_SITE_URL
 
 export default defineNuxtConfig({
   modules: [
+    '@nuxt/content',
     '@nuxt/a11y',
     '@nuxt/eslint',
     '@nuxt/hints',
