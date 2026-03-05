@@ -7,4 +7,9 @@
 
 <script setup>
 const { t } = useI18n()
+
+useLocalizedSeo({
+  titleKey: 'pages.blog.title',
+  descriptionKey: 'pages.blog.description',
+})
 </script>

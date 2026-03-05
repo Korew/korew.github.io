@@ -8,4 +8,13 @@
 <script setup>
 const route = useRoute()
 const { t } = useI18n()
+
+const slug = computed(() => String(route.params.slug ?? ''))
+const titleParams = computed(() => ({ slug: slug.value }))
+
+useLocalizedSeo({
+  titleKey: 'pages.tools.inner.title',
+  descriptionKey: 'pages.tools.inner.description',
+  titleParams,
+})
 </script>
