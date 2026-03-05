@@ -15,8 +15,8 @@
   },
   "pages": {
     "home": {
-      "title": "Home Page",
-      "description": "Welcome to the home page."
+      "title": "Roman Korenchuk — Frontend Engineer (Vue/Nuxt, TypeScript)",
+      "description": "Frontend engineer focused on Vue/Nuxt and TypeScript. I build fast, accessible, SEO-friendly web apps and tooling that helps teams ship."
     },
     "skills": {
       "title": "Skills",

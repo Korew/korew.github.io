@@ -33,9 +33,7 @@ export function useLocalizedSeo(options: UseLocalizedSeoOptions) {
     return siteUrl ? `${siteUrl}${path}` : path
   })
 
-  useHead(() => ({
-    title: title.value,
-  }))
+  useHead(() => ({ title }))
 
   useSeoMeta({
     description,
