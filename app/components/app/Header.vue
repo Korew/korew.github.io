@@ -100,7 +100,9 @@ const handleScroll = (): void => {
 }
 
 const closeMenu = (): void => {
-  isMenuOpen.value = false
+  setTimeout(() => {
+    isMenuOpen.value = false
+  }, 0)
 }
 
 const toggleMenu = (): void => {
