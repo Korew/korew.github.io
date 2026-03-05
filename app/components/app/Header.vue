@@ -95,21 +95,21 @@ const localePath = useLocalePath()
 const isScrolled = ref(false)
 const isMenuOpen = ref(false)
 
-const handleScroll = (): void => {
+const handleScroll = () => {
   isScrolled.value = window.scrollY > 0
 }
 
-const closeMenu = (): void => {
+const closeMenu = () => {
   setTimeout(() => {
     isMenuOpen.value = false
   }, 0)
 }
 
-const toggleMenu = (): void => {
+const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value
 }
 
-const changeLocale = (code: (typeof locales.value)[number]['code']): void => {
+const changeLocale = (code: (typeof locales.value)[number]['code']) => {
   setLocale(code)
   closeMenu()
 }
