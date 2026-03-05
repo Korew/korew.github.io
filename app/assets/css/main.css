@@ -1,1 +1,12 @@
+@config '../../../tailwind.config.ts';
 @import 'tailwindcss';
+
+:root {
+  --primary: #42b883;
+  --secondary: #35495e;
+}
+
+@theme inline {
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+}

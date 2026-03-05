@@ -3,6 +3,11 @@
   "Frontend Developer": "Frontend Developer",
   "nav": {
     "home": "Home",
+    "skills": "Skills",
+    "experience": "Experience",
+    "education": "Education",
+    "tools": "Tools",
+    "blog": "Blog",
     "contact": "Contact"
   },
   "footer": {
@@ -12,6 +17,34 @@
     "home": {
       "title": "Home Page",
       "description": "Welcome to the home page."
+    },
+    "skills": {
+      "title": "Skills",
+      "description": "Overview of my professional skills and strengths."
+    },
+    "experience": {
+      "title": "Experience",
+      "description": "Summary of my work experience and key achievements."
+    },
+    "education": {
+      "title": "Education",
+      "description": "My academic background and completed programs."
+    },
+    "tools": {
+      "title": "Tools",
+      "description": "Collection of tools, libraries, and technologies I use.",
+      "inner": {
+        "title": "Tool: {slug}",
+        "description": "Detailed information about this tool."
+      }
+    },
+    "blog": {
+      "title": "Blog",
+      "description": "Articles, notes, and insights.",
+      "inner": {
+        "title": "Post: {slug}",
+        "description": "Detailed blog post page."
+      }
     },
     "contact": {
       "title": "Contact Page",

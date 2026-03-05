@@ -19,7 +19,6 @@
 }
 
 .main {
-  @apply container mx-auto px-4;
   @apply flex-grow;
 }
 </style>

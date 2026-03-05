@@ -49,6 +49,7 @@ export default defineNuxtConfig({
     fallbackToApi: false,
     clientBundle: {
       icons: [
+        'lucide:languages',
         'simple-icons:github',
         'simple-icons:instagram',
         'simple-icons:telegram',
