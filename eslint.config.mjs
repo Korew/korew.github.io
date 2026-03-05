@@ -9,6 +9,7 @@ export default withNuxt(
       'comma-dangle': 'off',
       '@stylistic/comma-dangle': 'off',
       '@stylistic/arrow-parens': 'off',
+      '@stylistic/brace-style': 'off',
       'vue/no-multiple-template-root': 'off',
       'vue/first-attribute-linebreak': 'off',
       'vue/max-attributes-per-line': 'off',
