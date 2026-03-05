@@ -11,7 +11,7 @@
     "contact": "Contact"
   },
   "footer": {
-    "copyright": "© {year}. All rights reserved."
+    "copyright": "© {year}. Roman Korenchuk"
   },
   "pages": {
     "home": {
@@ -28,7 +28,7 @@
     },
     "education": {
       "title": "Education",
-      "description": "My academic background and completed programs."
+      "description": "My academic background, completed courses, and certifications."
     },
     "tools": {
       "title": "Tools",

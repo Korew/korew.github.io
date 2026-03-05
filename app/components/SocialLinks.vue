@@ -9,7 +9,7 @@
         target="_blank"
         rel="noopener noreferrer me"
       >
-        <Icon :name="link.icon" class="size-5" />
+        <Icon :name="link.icon" class="text-xl" />
       </a>
     </li>
   </ul>
@@ -20,7 +20,7 @@ import { socialLinks } from '../../data/social-links'
 </script>
 
 <style scoped>
-@reference "tailwindcss";
+@reference "~/assets/css/main.css";
 
 .links {
   @apply flex items-center gap-3;
@@ -29,7 +29,7 @@ import { socialLinks } from '../../data/social-links'
 .link {
   @apply inline-flex p-1;
   @apply rounded-md transition-opacity;
-  @apply opacity-80 hover:opacity-100;
+  @apply text-secondary hover:text-primary;
   @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current;
 }
 </style>
