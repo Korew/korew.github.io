@@ -54,6 +54,7 @@ export default defineNuxtConfig({
   i18n: {
     defaultLocale: 'en',
     baseUrl: siteUrl,
+    trailingSlash: true,
     locales: [
       { code: 'en', name: 'English', language: 'en-US', file: 'en.json' },
       { code: 'uk', name: 'Українська', language: 'uk-UA', file: 'uk.json' },
