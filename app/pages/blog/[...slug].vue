@@ -22,10 +22,15 @@ const { locale } = useI18n()
 const slugValue = computed(() => {
   const slugParam = route.params.slug
   if (Array.isArray(slugParam)) {
-    return slugParam.join('/')
+    return slugParam
+      .map(part => String(part).trim())
+      .filter(Boolean)
+      .join('/')
   }
 
   return String(slugParam ?? '')
+    .trim()
+    .replace(/^\/+|\/+$/g, '')
 })
 
 const contentPath = computed(() => {

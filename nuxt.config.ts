@@ -1,7 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import tailwindcss from '@tailwindcss/vite'
+import { loadEnv } from 'vite'
 
-const siteUrl = import.meta.env.NUXT_PUBLIC_SITE_URL
+const env = loadEnv(process.env.NODE_ENV || 'development', process.cwd(), '')
+const siteUrl = env.NUXT_PUBLIC_SITE_URL
+
+if (!siteUrl) {
+  throw new Error('NUXT_PUBLIC_SITE_URL is required')
+}
 
 export default defineNuxtConfig({
   modules: [
