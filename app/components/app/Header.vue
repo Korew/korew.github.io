@@ -149,6 +149,7 @@ const isActive = (path: string): boolean => {
   @apply sticky top-0 z-50;
   @apply py-4 lg:py-8;
   @apply border-b border-secondary;
+  @apply bg-white;
 }
 
 .header--scrolled {

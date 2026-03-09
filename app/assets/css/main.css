@@ -10,3 +10,16 @@
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
 }
+
+.blog-content pre code .line::before {
+  content: attr(line);
+  display: inline-block;
+  margin-right: 1rem;
+  font-size: 0.875rem;
+  left: 0;
+  width: 1.5rem;
+  text-align: right;
+  opacity: 0.55;
+  user-select: none;
+  color: #fff;
+}

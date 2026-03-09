@@ -3,7 +3,7 @@
     <p v-if="isFallback" class="text-sm opacity-80">
       Not available in Ukrainian, showing English.
     </p>
-    <ContentRenderer :value="page" />
+    <ContentRenderer :value="page" class="blog-content" />
   </div>
 </template>
 
