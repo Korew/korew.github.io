@@ -36,6 +36,44 @@
       "inner": {
         "title": "Tool: {slug}",
         "description": "Detailed information about this tool."
+      },
+      "stableYield": {
+        "title": "Stable Yield Splitter",
+        "subtitle": "Estimate how to split stablecoins across exchanges and APR tiers for better projected yield.",
+        "description": "Use this estimator to distribute your stablecoins across current offers. APR values are annual rates and estimates only.",
+        "amount": "Amount (USD)",
+        "asset": "Asset",
+        "allAssets": "All assets",
+        "exchanges": "Exchanges",
+        "weightedApr": "Weighted APR",
+        "estimatedDailyIncome": "Estimated daily income",
+        "estimatedMonthlyIncome": "Estimated monthly income",
+        "estimatedYearlyIncome": "Estimated yearly income",
+        "allocation": "Allocation",
+        "currentOffers": "Current offers",
+        "manuallyUpdated": "Manually updated once per day",
+        "referralLink": "Referral",
+        "openExchange": "Open exchange",
+        "noResults": "No matching results for current filters.",
+        "enterAmountHint": "Enter a valid amount greater than 0 to see allocation estimates.",
+        "notes": "Notes",
+        "promo": "Promo",
+        "flexible": "Flexible",
+        "fixed": "Fixed",
+        "fromAmount": "From",
+        "aboveAmount": "and above",
+        "disclaimerTitle": "Disclaimer",
+        "disclaimerText": "This tool provides estimated returns based on manually maintained APR data. It does not guarantee income, and actual rates can change at any time.",
+        "allocationHeaders": {
+          "exchange": "Exchange",
+          "amount": "Allocated amount",
+          "apr": "APR"
+        },
+        "offersHeaders": {
+          "productType": "Product type",
+          "tiers": "APR tiers",
+          "updatedAt": "Updated"
+        }
       }
     },
     "blog": {
