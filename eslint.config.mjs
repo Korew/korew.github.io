@@ -10,9 +10,20 @@ export default withNuxt(
       '@stylistic/comma-dangle': 'off',
       '@stylistic/arrow-parens': 'off',
       '@stylistic/brace-style': 'off',
+      '@stylistic/indent': 'off',
+      'operator-linebreak': 'off',
+      '@stylistic/operator-linebreak': 'off',
       'vue/no-multiple-template-root': 'off',
       'vue/first-attribute-linebreak': 'off',
       'vue/max-attributes-per-line': 'off',
+      'vue/html-self-closing': [
+        'error',
+        {
+          html: {
+            void: 'any',
+          },
+        },
+      ],
       'vue/no-v-html': 'off',
       'no-empty': 'off',
       '@nuxt/nuxt/prefer-import-meta': 'off',
