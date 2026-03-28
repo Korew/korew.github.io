@@ -70,22 +70,25 @@ const toggleMode = () => {
 }
 
 .control-label {
-  @apply text-xs uppercase tracking-widest text-slate-400;
+  @apply text-xs text-slate-400;
+  @apply uppercase tracking-widest whitespace-nowrap;
 }
 
 .control-value {
   @apply flex items-center justify-between gap-1;
-  @apply w-full h-12 pl-4 pr-1 mt-2;
+  @apply w-full h-8 md:h-12 mt-1 md:mt-2;
+  @apply pl-2 md:pl-4 md:pr-1;
   @apply bg-slate-600 text-left;
   @apply border-2 border-transparent rounded-xl;
 }
 .control-value.toggle {
-  @apply py-2;
+  @apply pr-0.5 py-1 md:py-2 md:pr-1;
   @apply cursor-pointer;
 
   span:last-child {
+    @apply flex items-center justify-center;
+    @apply w-6 h-6 md:w-9 md:h-9;
     @apply text-slate-400;
-    @apply py-2 px-3;
     @apply rounded-lg bg-slate-700 text-sm text-slate-300;
   }
 
@@ -96,7 +99,7 @@ const toggleMode = () => {
 
 .panel-footer {
   @apply flex items-center justify-end gap-2;
-  @apply p-2 pt-8;
+  @apply pt-4 md:p-2  md:pt-8;
   @apply text-slate-500 tracking-widest;
 
   svg {
