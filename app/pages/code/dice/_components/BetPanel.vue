@@ -45,7 +45,10 @@ const handleClickHalve = () => {
 }
 
 const handleClickDouble = () => {
-  betAmount.value = Math.min(roundToCents(betAmount.value * 2), maxAllowedBet.value)
+  betAmount.value = Math.min(
+    roundToCents(betAmount.value * 2),
+    maxAllowedBet.value
+  )
 }
 
 const handleClickMax = () => {
