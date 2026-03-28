@@ -88,7 +88,6 @@ const toggleMode = () => {
   span:last-child {
     @apply flex items-center justify-center;
     @apply w-6 h-6 md:w-9 md:h-9;
-    @apply text-slate-400;
     @apply rounded-lg bg-slate-700 text-sm text-slate-300;
   }
 
