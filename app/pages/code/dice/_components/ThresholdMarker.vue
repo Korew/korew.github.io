@@ -48,7 +48,7 @@ const iconPath = [
 @reference "~/assets/css/main.css";
 
 .threshold-marker {
-  @apply absolute top-1/2 -translate-1/2;
+  @apply absolute top-1/2 -translate-x-1/2 -translate-y-1/2;
   @apply flex items-center justify-center;
   @apply w-14 h-14;
   @apply rounded-full text-sm font-semibold text-slate-900;

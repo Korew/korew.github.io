@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { MIN_BET } from '../_utils/const'
+import { roundToCents } from '../_utils/helpers'
+
 const props = defineProps<{
   balance: number
   multiplier: number
@@ -16,8 +19,7 @@ const betAmount = defineModel<number>('betAmount', {
 
 const betInput = computed({
   get: () => betAmount.value,
-  set: (value: number) =>
-    value ? (betAmount.value = value) : (betAmount.value = 0),
+  set: (value: number) => (betAmount.value = value > 0 ? value : 0),
 })
 
 const profitOnWin = computed(() => betAmount.value * (props.multiplier - 1))
@@ -29,20 +31,13 @@ const isRollDisabled = computed(
     props.isRolling || betAmount.value <= 0 || betAmount.value > props.balance
 )
 
+/** Halve the bet, keeping at least MIN_BET. */
 const handleClickHalve = () => {
-  if (betAmount.value / 2 > props.balance) {
-    betAmount.value = props.balance
-    return
-  }
-  betAmount.value = Math.round((betAmount.value / 2) * 100) / 100
+  betAmount.value = Math.max(MIN_BET, roundToCents(betAmount.value / 2))
 }
 
 const handleClickDouble = () => {
-  if (betAmount.value * 2 > props.balance) {
-    betAmount.value = props.balance
-    return
-  }
-  betAmount.value = betAmount.value * 2
+  betAmount.value = Math.min(betAmount.value * 2, props.balance)
 }
 
 const handleClickMax = () => {
@@ -69,6 +64,8 @@ const handleClickMax = () => {
           type="number"
           inputmode="decimal"
           placeholder="0.00"
+          :min="MIN_BET"
+          step="0.01"
         />
 
         <button type="button" @click="handleClickHalve">½</button>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { DEFAULT_WIN_CHANCE, PAYOUT_CONSTANT } from './_utils/const'
 import type { RollResult, RollMode } from './_utils/types'
-import { mockRoll } from './_utils/helpers'
+import { mockRoll, roundToCents } from './_utils/helpers'
 
 import BetPanel from './_components/BetPanel.vue'
 import ControlsPanel from './_components/ControlsPanel.vue'
@@ -18,7 +18,7 @@ const isRolling = ref(false)
 const betAmount = ref(1)
 const mode = ref<RollMode>('over')
 const threshold = ref(100 - DEFAULT_WIN_CHANCE)
-const lastRoll = ref<RollResult>()
+const result = ref<RollResult>()
 const history = ref<RollResult[]>([])
 
 const winChance = computed(() => {
@@ -34,16 +34,16 @@ const multiplier = computed(
 )
 
 const handleRoll = async () => {
+  isRolling.value = true
+  balance.value = roundToCents(balance.value - betAmount.value)
+
   try {
-    isRolling.value = true
-    lastRoll.value = await mockRoll(
-      threshold.value,
-      betAmount.value,
-      mode.value
-    )
-    balance.value -= betAmount.value
-    history.value.push(lastRoll.value)
-    balance.value += lastRoll.value.profit
+    const roll = await mockRoll(threshold.value, betAmount.value, mode.value)
+    result.value = roll
+    history.value.push(roll)
+    balance.value = roundToCents(balance.value + roll.payout)
+  } catch {
+    balance.value = roundToCents(balance.value + betAmount.value)
   } finally {
     isRolling.value = false
   }
@@ -56,12 +56,7 @@ const handleRoll = async () => {
       <section class="game-field">
         <RollHistory :history />
 
-        <DiceTrack
-          v-model:threshold="threshold"
-          :mode
-          :result="lastRoll"
-          :is-rolling
-        />
+        <DiceTrack v-model:threshold="threshold" :mode :result :is-rolling />
 
         <ControlsPanel v-model:mode="mode" :threshold :win-chance :multiplier />
       </section>

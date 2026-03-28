@@ -39,14 +39,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   resizeObserver?.disconnect()
 })
-
-watch(
-  () => history.length,
-  async () => {
-    await nextTick()
-    updateVisibleItemsCount()
-  }
-)
 </script>
 
 <template>
@@ -56,7 +48,8 @@ watch(
         v-for="item in visibleHistory"
         :key="item.id"
         class="history-chip"
-        :class="item.is_win ? 'text-emerald-300' : 'text-slate-300'"
+        :aria-label="`${item.result.toFixed(2)} — ${item.isWin ? 'win' : 'loss'}`"
+        :class="item.isWin ? 'text-emerald-300' : 'text-slate-300'"
       >
         {{ item.result.toFixed(2) }}
       </div>

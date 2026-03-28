@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import ThresholdMarker from './ThresholdMarker.vue'
 
-import { clamp } from '../_utils/helpers'
+import { clamp, roundToCents } from '../_utils/helpers'
 import { MIN_WIN_CHANCE, MAX_WIN_CHANCE } from '../_utils/const'
 import type { RollMode, RollResult } from '../_utils/types'
 
@@ -20,6 +19,11 @@ const threshold = defineModel<number>('threshold', {
 const trackRef = ref<HTMLElement | null>(null)
 const isDragging = ref(false)
 const markers = [0, 25, 50, 75, 100] as const
+
+/** Arrow-key step sizes for keyboard navigation of the threshold slider. */
+const KEYBOARD_STEP = 0.5
+const KEYBOARD_BIG_STEP = 5
+const KEYBOARD_SMALL_STEP = 0.01
 
 const BOUNDS = {
   under: { min: MIN_WIN_CHANCE, max: MAX_WIN_CHANCE },
@@ -48,7 +52,8 @@ const percentFromClientX = (clientX: number) => {
 
 const handlePointerMove = (event: PointerEvent) => {
   if (!isDragging.value) return
-  threshold.value = percentFromClientX(event.clientX)
+  // Round during drag to avoid sub-cent floating-point noise in the display.
+  threshold.value = roundToCents(percentFromClientX(event.clientX))
 }
 
 const stopDragging = () => {
@@ -62,9 +67,42 @@ const startDragging = (event: PointerEvent) => {
 
   event.preventDefault()
   isDragging.value = true
-  threshold.value = percentFromClientX(event.clientX)
+  threshold.value = roundToCents(percentFromClientX(event.clientX))
   window.addEventListener('pointermove', handlePointerMove)
   window.addEventListener('pointerup', stopDragging)
+}
+
+/**
+ * Keyboard handler that lets users adjust the threshold using arrow keys.
+ * - Arrow Left / Arrow Down: decrease by KEYBOARD_STEP
+ * - Arrow Right / Arrow Up: increase by KEYBOARD_STEP
+ * - Hold Shift for KEYBOARD_BIG_STEP jumps
+ * - Hold Alt for KEYBOARD_SMALL_STEP jumps
+ */
+const handleKeydown = (event: KeyboardEvent) => {
+  if (props.isRolling) return
+
+  const { min, max } = bounds.value
+  let delta = 0
+
+  if (event.key === 'ArrowLeft' || event.key === 'ArrowDown') {
+    delta = event.shiftKey
+      ? -KEYBOARD_BIG_STEP
+      : event.altKey
+        ? -KEYBOARD_SMALL_STEP
+        : -KEYBOARD_STEP
+  } else if (event.key === 'ArrowRight' || event.key === 'ArrowUp') {
+    delta = event.shiftKey
+      ? KEYBOARD_BIG_STEP
+      : event.altKey
+        ? KEYBOARD_SMALL_STEP
+        : KEYBOARD_STEP
+  } else {
+    return
+  }
+
+  event.preventDefault()
+  threshold.value = clamp(roundToCents(threshold.value + delta), min, max)
 }
 
 watch(
@@ -83,11 +121,19 @@ onBeforeUnmount(() => {
 <template>
   <div
     ref="trackRef"
+    role="slider"
+    tabindex="0"
     class="track-container"
     :class="{ 'track-container--disabled': isRolling }"
+    :aria-valuemin="bounds.min"
+    :aria-valuemax="bounds.max"
+    :aria-valuenow="threshold"
+    :aria-label="`Threshold: roll ${mode} ${threshold.toFixed(2)}`"
+    :aria-disabled="isRolling"
     @pointerdown="startDragging"
+    @keydown="handleKeydown"
   >
-    <!-- Gradient fill -->
+    <!-- Colour-coded gradient: green = win zone, red = loss zone -->
     <div class="track-gradient" :style="{ background: trackFill }" />
 
     <!-- Dot markers (inset to account for circle) -->
@@ -104,7 +150,7 @@ onBeforeUnmount(() => {
     <div v-if="result?.result !== undefined" class="result-track">
       <div
         class="result-marker"
-        :class="result.is_win ? 'result-bubble--win' : 'result-bubble--lose'"
+        :class="result.isWin ? 'result-bubble--win' : 'result-bubble--lose'"
         :style="{ left: `${result.result}%` }"
       >
         {{ result.result.toFixed(2) }}

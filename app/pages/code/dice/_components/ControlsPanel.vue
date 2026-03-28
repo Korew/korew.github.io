@@ -25,7 +25,11 @@ const toggleMode = () => {
       </div>
       <div class="control-item">
         <div class="control-label">Roll {{ mode }}</div>
-        <button class="control-value toggle" @click="toggleMode">
+        <button
+          class="control-value toggle"
+          :aria-label="`Click to switch to roll ${mode === 'under' ? 'over' : 'under'}`"
+          @click="toggleMode"
+        >
           <span>{{ threshold.toFixed(2) }}</span>
           <span>↻</span>
         </button>
@@ -49,7 +53,7 @@ const toggleMode = () => {
           clip-rule="evenodd"
         />
       </svg>
-      Provably Fair
+      Randomized Rolls
     </div>
   </div>
 </template>
