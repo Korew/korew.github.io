@@ -5,3 +5,4 @@ export const MAX_WIN_CHANCE = 98
 export const DEFAULT_WIN_CHANCE = PAYOUT_CONSTANT / 2
 
 export const MIN_BET = 0.01
+export const MAX_BET = 1000

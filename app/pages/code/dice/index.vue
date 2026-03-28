@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { DEFAULT_WIN_CHANCE, PAYOUT_CONSTANT } from './_utils/const'
+import {
+  DEFAULT_WIN_CHANCE,
+  MAX_BET,
+  MIN_BET,
+  PAYOUT_CONSTANT,
+} from './_utils/const'
 import type { RollResult, RollMode } from './_utils/types'
 import { mockRoll, roundToCents } from './_utils/helpers'
 
@@ -33,7 +38,13 @@ const multiplier = computed(
   () => (100 / winChance.value) * (PAYOUT_CONSTANT / 100)
 )
 
+const maxAllowedBet = computed(() => Math.min(balance.value, MAX_BET))
+
 const handleRoll = async () => {
+  if (isRolling.value) return
+
+  if (betAmount.value < MIN_BET || betAmount.value > maxAllowedBet.value) return
+
   isRolling.value = true
   balance.value = roundToCents(balance.value - betAmount.value)
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MIN_BET } from '../_utils/const'
+import { MAX_BET, MIN_BET } from '../_utils/const'
 import { roundToCents } from '../_utils/helpers'
 
 const props = defineProps<{
@@ -17,18 +17,26 @@ const betAmount = defineModel<number>('betAmount', {
   required: true,
 })
 
+const maxAllowedBet = computed(() => Math.min(props.balance, MAX_BET))
+
 const betInput = computed({
   get: () => betAmount.value,
-  set: (value: number) => (betAmount.value = value > 0 ? value : 0),
+  set: (value: number) => {
+    if (!Number.isFinite(value) || value <= 0) {
+      betAmount.value = 0
+      return
+    }
+
+    betAmount.value = Math.min(roundToCents(value), maxAllowedBet.value)
+  },
 })
 
 const profitOnWin = computed(() => betAmount.value * (props.multiplier - 1))
 
-const isOverBalance = computed(() => betAmount.value > props.balance)
+const isBetTooHigh = computed(() => betAmount.value > maxAllowedBet.value)
 
 const isRollDisabled = computed(
-  () =>
-    props.isRolling || betAmount.value <= 0 || betAmount.value > props.balance
+  () => props.isRolling || betAmount.value < MIN_BET || isBetTooHigh.value
 )
 
 /** Halve the bet, keeping at least MIN_BET. */
@@ -37,11 +45,11 @@ const handleClickHalve = () => {
 }
 
 const handleClickDouble = () => {
-  betAmount.value = Math.min(betAmount.value * 2, props.balance)
+  betAmount.value = Math.min(roundToCents(betAmount.value * 2), maxAllowedBet.value)
 }
 
 const handleClickMax = () => {
-  betAmount.value = props.balance
+  betAmount.value = maxAllowedBet.value
 }
 </script>
 
@@ -57,7 +65,7 @@ const handleClickMax = () => {
 
       <div
         class="panel__bet-input"
-        :class="{ 'panel__bet-input--error': isOverBalance }"
+        :class="{ 'panel__bet-input--error': isBetTooHigh }"
       >
         <input
           v-model.number="betInput"
@@ -65,6 +73,7 @@ const handleClickMax = () => {
           inputmode="decimal"
           placeholder="0.00"
           :min="MIN_BET"
+          :max="MAX_BET"
           step="0.01"
         />
 
