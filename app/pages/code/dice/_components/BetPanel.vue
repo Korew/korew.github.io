@@ -106,8 +106,8 @@ const handleClickMax = () => {
 @reference "~/assets/css/main.css";
 
 .panel {
-  @apply flex flex-col gap-6;
-  @apply p-4;
+  @apply flex flex-col gap-3 md:gap-6;
+  @apply p-2 md:p-4;
   @apply bg-slate-700 text-slate-100;
 }
 
@@ -122,7 +122,8 @@ const handleClickMax = () => {
 }
 
 .panel__bet-input {
-  @apply flex items-center gap-2 pr-2;
+  @apply flex items-center gap-1 md:gap-2;
+  @apply pr-0.5 md:pr-2;
   @apply bg-slate-600;
   @apply border-2 border-transparent rounded-xl;
   @apply transition-colors duration-200;
@@ -138,7 +139,7 @@ const handleClickMax = () => {
   }
 
   input {
-    @apply grow min-w-0 p-4;
+    @apply grow min-w-0 p-2 md:p-4;
     @apply border-0 bg-transparent shadow-none outline-none;
     @apply appearance-none focus:border-0 focus:ring-0;
 
@@ -170,7 +171,7 @@ const handleClickMax = () => {
 }
 
 .panel__roll-button {
-  @apply block w-full p-4;
+  @apply block w-full p-2 md:p-4;
   @apply rounded-xl cursor-pointer;
   @apply bg-emerald-500 font-semibold text-slate-100;
   @apply transition-colors duration-200;

@@ -87,21 +87,21 @@ const handleRoll = async () => {
 
 .page-dice {
   @apply flex items-center justify-center;
-  @apply min-h-dvh p-4 md:p-8;
+  @apply min-h-dvh p-2 md:p-8;
   @apply bg-slate-800 text-slate-100;
 }
 
 .game-container {
   @apply flex flex-col lg:flex-row;
   @apply w-full max-w-6xl mx-auto;
-  @apply rounded-3xl overflow-hidden;
+  @apply rounded-xl md:rounded-3xl overflow-hidden;
 }
 
 .game-field {
   @apply flex flex-col justify-between;
   @apply lg:order-last;
-  @apply w-full p-4;
-  @apply min-h-80 lg:min-h-180;
+  @apply w-full p-2 md:p-4;
+  @apply min-h-72 lg:min-h-180;
   @apply bg-slate-900;
 }
 </style>
