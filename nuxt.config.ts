@@ -5,6 +5,27 @@ import { loadEnv } from 'vite'
 const env = loadEnv(process.env.NODE_ENV || 'development', process.cwd(), '')
 const siteUrl = env.NUXT_PUBLIC_SITE_URL
 
+type NuxtPageNode = {
+  file?: string
+  children?: NuxtPageNode[]
+}
+
+const stripInternalPages = (pages: NuxtPageNode[]) => {
+  for (let index = pages.length - 1; index >= 0; index -= 1) {
+    const page = pages[index]!
+    const segments = page.file?.split('/') ?? []
+
+    if (segments.some(segment => segment.startsWith('_'))) {
+      pages.splice(index, 1)
+      continue
+    }
+
+    if (page.children) {
+      stripInternalPages(page.children)
+    }
+  }
+}
+
 if (!siteUrl) {
   throw new Error('NUXT_PUBLIC_SITE_URL is required')
 }
@@ -40,6 +61,11 @@ export default defineNuxtConfig({
   typescript: {
     strict: true,
     typeCheck: false,
+  },
+  hooks: {
+    'pages:extend'(pages) {
+      stripInternalPages(pages)
+    },
   },
 
   eslint: {
