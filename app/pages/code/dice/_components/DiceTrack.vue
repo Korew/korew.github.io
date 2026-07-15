@@ -168,7 +168,7 @@ onBeforeUnmount(() => {
 @reference "~/assets/css/main.css";
 
 .track-container {
-  @apply relative h-10;
+  @apply relative h-10 translate-y-4;
   @apply rounded-full border-2 border-white/20;
   @apply cursor-pointer touch-none;
 }
