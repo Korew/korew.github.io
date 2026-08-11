@@ -253,7 +253,7 @@ const formatNullableLineTotal = (item: InvoiceItem): string => {
   .invoice-document {
     width: auto;
     min-height: auto;
-    padding: 0;
+    padding: 0 1mm 0 0;
     box-shadow: none;
     font-size: 12pt;
   }
