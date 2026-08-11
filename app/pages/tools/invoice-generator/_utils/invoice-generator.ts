@@ -364,10 +364,12 @@ export const composeCorkCompensatorName = (
   code: string,
   dimensions: string
 ): string => {
+  const normalizedDimensions = normalizeTextPart(dimensions)
+
   return [
     'Корковий компенсатор',
     normalizeTextPart(code),
-    `(${normalizeTextPart(dimensions)})`,
+    normalizedDimensions ? `(${normalizedDimensions})` : '',
   ]
     .filter(Boolean)
     .join(' ')

@@ -3,6 +3,7 @@ import {
   buildInvoiceFilename,
   calculateInvoiceTotal,
   calculateLineTotal,
+  composeCorkCompensatorName,
   formatMoneyUah,
   formatUkrainianCurrencyWords,
   formatUkrainianInvoiceDate,
@@ -28,6 +29,19 @@ describe('invoice generator utilities', () => {
       { quantity: null, unitPrice: 100 },
     ])).toBe(1601.01)
     expect(formatMoneyUah(12450.5)).toBe('12 450,50')
+  })
+
+  it('composes cork compensator names without empty dimensions', () => {
+    expect(composeCorkCompensatorName('RG-107', '10×15×900')).toBe(
+      'Корковий компенсатор RG-107 (10×15×900)'
+    )
+    expect(composeCorkCompensatorName('RG-107', '')).toBe(
+      'Корковий компенсатор RG-107'
+    )
+    expect(composeCorkCompensatorName('', '10×15×900')).toBe(
+      'Корковий компенсатор (10×15×900)'
+    )
+    expect(composeCorkCompensatorName('', '')).toBe('Корковий компенсатор')
   })
 
   it('formats Ukrainian integer words with thousand and million grammar', () => {
