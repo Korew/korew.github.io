@@ -2,7 +2,6 @@
   "Roman Korenchuk": "Roman Korenchuk",
   "Frontend Developer": "Frontend Developer",
   "nav": {
-    "home": "Home",
     "skills": "Skills",
     "experience": "Experience",
     "education": "Education",
@@ -33,6 +32,63 @@
     "tools": {
       "title": "Tools",
       "description": "Collection of tools, libraries, and technologies I use.",
+      "items": {
+        "invoiceGenerator": {
+          "title": "Invoice generator",
+          "description": "Create printable invoices for cork compensators.",
+          "linkLabel": "Open invoice generator"
+        }
+      },
+      "invoiceGenerator": {
+        "title": "Invoice generator",
+        "description": "Create printable Ukrainian invoices for cork compensators.",
+        "seo": {
+          "title": "Ukrainian invoice generator for cork compensators",
+          "description": "Generate printable Ukrainian invoices for cork compensator sales directly in the browser."
+        },
+        "languageSwitcher": "Invoice generator language",
+        "preview": "Live preview",
+        "productsIntro": "Add products manually, duplicate rows, or edit values.",
+        "itemHeading": "Item {number}",
+        "confirmClearSavedData": "Clear the saved invoice draft from this browser?",
+        "draftSavedLocally": "Draft saved locally",
+        "sections": {
+          "invoiceDetails": "Invoice details",
+          "quickAdd": "Quick add of cork compensator",
+          "products": "Products",
+          "actions": "Actions"
+        },
+        "fields": {
+          "supplier": "Supplier",
+          "recipient": "Recipient",
+          "date": "Date",
+          "invoiceNumber": "Invoice number",
+          "productCode": "Product code",
+          "dimensions": "Dimensions",
+          "productName": "Product name",
+          "unit": "Unit",
+          "quantity": "Quantity",
+          "price": "Price"
+        },
+        "actions": {
+          "quickAdd": "Move cork compensator to products",
+          "duplicateItemAria": "Duplicate item {number}",
+          "removeItemAria": "Remove item {number}",
+          "newInvoice": "New invoice",
+          "clearSavedData": "Clear saved data",
+          "savePdf": "Save as PDF"
+        },
+        "validation": {
+          "summaryTitle": "Please fix these fields before printing:",
+          "supplierRequired": "Supplier is required.",
+          "recipientRequired": "Recipient is required.",
+          "dateRequired": "Enter a valid invoice date.",
+          "numberRequired": "Invoice number is required.",
+          "validItemRequired": "Add at least one valid product item.",
+          "itemInvalid": "Item {number}: enter product name, unit, quantity above 0, and price 0 or more.",
+          "quickAddRequired": "Enter a product code or dimensions first."
+        }
+      },
       "inner": {
         "title": "Tool: {slug}",
         "description": "Detailed information about this tool."
@@ -40,11 +96,7 @@
     },
     "blog": {
       "title": "Blog",
-      "description": "Articles, notes, and insights.",
-      "inner": {
-        "title": "Post: {slug}",
-        "description": "Detailed blog post page."
-      }
+      "description": "Articles, notes, and insights."
     },
     "contact": {
       "title": "Contact Page",
