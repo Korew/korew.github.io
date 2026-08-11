@@ -175,14 +175,20 @@ const formatNullableLineTotal = (item: InvoiceItem): string => {
 }
 
 .invoice-table {
+  box-sizing: border-box;
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-right: 1px solid #111111;
+  border-bottom: 1px solid #111111;
   table-layout: fixed;
 }
 
 .invoice-table th,
 .invoice-table td {
-  border: 1px solid #111111;
+  border: 0;
+  border-top: 1px solid #111111;
+  border-left: 1px solid #111111;
   padding: 6px 7px;
   vertical-align: middle;
   word-break: normal;
@@ -260,6 +266,10 @@ const formatNullableLineTotal = (item: InvoiceItem): string => {
 
   .invoice-table th,
   .invoice-table td {
+    border-color: #000000;
+  }
+
+  .invoice-table {
     border-color: #000000;
   }
 }
