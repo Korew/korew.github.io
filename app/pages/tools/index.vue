@@ -33,10 +33,13 @@ useLocalizedSeo({
 </script>
 
 <style scoped>
+@reference "~/assets/css/main.css";
+
 .tools-page {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 32px 20px 48px;
+  @apply max-w-7xl mx-auto px-4;
+
+  padding-top: 32px;
+  padding-bottom: 48px;
 }
 
 .tools-page h1 {
