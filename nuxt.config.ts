@@ -4,6 +4,20 @@ import { loadEnv } from 'vite'
 
 const env = loadEnv(process.env.NODE_ENV || 'development', process.cwd(), '')
 const siteUrl = env.NUXT_PUBLIC_SITE_URL
+const enableA11y = env.NUXT_A11Y === 'true'
+const enableHints = env.NUXT_HINTS === 'true'
+
+type DevAnalysisModule = string | [string, { enabled: boolean }]
+
+const enabledDevAnalysisModules: DevAnalysisModule[] = []
+
+if (enableA11y) {
+  enabledDevAnalysisModules.push(['@nuxt/a11y', { enabled: true }])
+}
+
+if (enableHints) {
+  enabledDevAnalysisModules.push('@nuxt/hints')
+}
 
 type NuxtPageNode = {
   file?: string
@@ -33,9 +47,8 @@ if (!siteUrl) {
 export default defineNuxtConfig({
   modules: [
     '@nuxt/content',
-    '@nuxt/a11y',
+    ...enabledDevAnalysisModules,
     '@nuxt/eslint',
-    '@nuxt/hints',
     '@nuxt/icon',
     '@nuxt/image',
     '@nuxt/scripts',
@@ -92,7 +105,14 @@ export default defineNuxtConfig({
     fallbackToApi: false,
     clientBundle: {
       icons: [
+        'lucide:arrow-right',
+        'lucide:copy',
+        'lucide:eraser',
+        'lucide:file-plus',
         'lucide:languages',
+        'lucide:plus',
+        'lucide:printer',
+        'lucide:trash-2',
         'simple-icons:github',
         'simple-icons:instagram',
         'simple-icons:telegram',

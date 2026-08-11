@@ -8,6 +8,12 @@ export default withNuxt(
       'max-len': ['error', { code: 100, tabWidth: 2 }],
       'comma-dangle': 'off',
       '@stylistic/comma-dangle': 'off',
+      'vue/comma-dangle': 'off',
+      '@stylistic/quotes': [
+        'error',
+        'single',
+        { allowTemplateLiterals: 'always', avoidEscape: true },
+      ],
       '@stylistic/arrow-parens': 'off',
       '@stylistic/brace-style': 'off',
       '@stylistic/indent': 'off',
