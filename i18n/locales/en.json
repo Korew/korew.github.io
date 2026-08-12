@@ -100,7 +100,6 @@
         "languageSwitcher": "Language",
         "amount": "Amount (USD)",
         "asset": "Asset",
-        "allAssets": "All assets",
         "exchanges": "Exchanges",
         "weightedApr": "Weighted APR",
         "estimatedDailyIncome": "Estimated daily income",

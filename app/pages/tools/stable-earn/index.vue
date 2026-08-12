@@ -53,7 +53,9 @@
         <legend class="text-sm font-medium text-slate-700">
           {{ t('pages.tools.stableEarn.asset') }}
         </legend>
-        <div class="grid max-h-48 grid-cols-2 gap-2 overflow-y-auto pr-1 sm:grid-cols-3 lg:grid-cols-2">
+        <div
+          class="grid max-h-48 grid-cols-2 gap-2 overflow-y-auto pr-1 sm:grid-cols-3 lg:grid-cols-2"
+        >
           <UiCheckbox
             v-for="asset in stableAssets"
             :key="asset"
@@ -232,19 +234,58 @@ const threadsLink = socialLinks.find(link => link.id === 'threads') ?? {
   href: 'https://www.threads.com/@roman.korenchuk',
   icon: 'simple-icons:threads' as const,
 }
-const stableAssets = computed<StableAsset[]>(() => {
-  return [...new Set(stableEarnOffers.map(offer => offer.asset))].sort()
-})
-const selectedAssets = ref<StableAsset[]>(
-  stableAssets.value.filter(asset => ['USDT', 'USDC', 'DAI'].includes(asset))
-)
 
 const activeExchanges = computed(() => {
   return [...stableEarnExchanges].filter(exchange => exchange.isActive)
 })
 
+const activeExchangeIds = computed(() => {
+  return new Set<ExchangeId>(activeExchanges.value.map(exchange => exchange.id))
+})
+
+const availableOffers = computed(() => {
+  return stableEarnOffers.filter(offer => {
+    if (!activeExchangeIds.value.has(offer.exchangeId)) {
+      return false
+    }
+
+    if (offer.status !== 'available') {
+      return false
+    }
+
+    return offer.tiers.some(tier => tier.status === 'available')
+  })
+})
+
+const stableAssets = computed<StableAsset[]>(() => {
+  return [...new Set(availableOffers.value.map(offer => offer.asset))].sort()
+})
+const selectedAssets = ref<StableAsset[]>([])
+const hasInitializedAssetSelection = ref(false)
+
 const selectedExchangeIds = ref<ExchangeId[]>(
   activeExchanges.value.map(exchange => exchange.id)
+)
+
+watch(
+  stableAssets,
+  assets => {
+    if (!hasInitializedAssetSelection.value && assets.length > 0) {
+      selectedAssets.value = [...assets]
+      hasInitializedAssetSelection.value = true
+      return
+    }
+
+    const availableAssetSet = new Set<StableAsset>(assets)
+    const selectedAvailableAssets = selectedAssets.value.filter(asset =>
+      availableAssetSet.has(asset)
+    )
+
+    if (selectedAvailableAssets.length !== selectedAssets.value.length) {
+      selectedAssets.value = selectedAvailableAssets
+    }
+  },
+  { immediate: true }
 )
 
 const normalizedAmount = computed(() => {
