@@ -30,6 +30,19 @@ export type StableAsset =
 
 export type EarnProductType = 'flexible' | 'fixed'
 
+export type EarnOfferSource = 'manual' | 'api' | 'scrape'
+
+export type EarnOfferStatus =
+  | 'available'
+  | 'sold_out'
+  | 'paused'
+  | 'unavailable'
+  | 'unknown'
+
+export type EarnRateKind = 'apr' | 'apy'
+
+export type EarnRateValueFormat = 'percent' | 'decimal' | 'basisPoints'
+
 export interface ExchangeItem {
   id: ExchangeId
   name: string
@@ -50,9 +63,29 @@ export interface ExchangeItem {
   isActive: boolean
 }
 
-export interface AprTier {
-  max: number | null
+export interface NormalizeEarnRateOptions {
+  value: number | string
+  kind: EarnRateKind
+  valueFormat: EarnRateValueFormat
+  compoundingPeriodsPerYear?: number
+}
+
+export interface NormalizedEarnRate {
+  kind: EarnRateKind
+  rawValue: number | string
+  valueFormat: EarnRateValueFormat
+  annualRatePercent: number
   apr: number
+  compoundingPeriodsPerYear: number | null
+}
+
+export interface AprTier {
+  minAmount: number
+  maxAmount: number | null
+  remainingCapacity: number | null
+  apr: number
+  rate: NormalizedEarnRate
+  status: EarnOfferStatus
 }
 
 export interface EarnOffer {
@@ -60,10 +93,21 @@ export interface EarnOffer {
   exchangeId: ExchangeId
   asset: StableAsset
   productType: EarnProductType
+  source: EarnOfferSource
+  sourceUrl: string | null
+  fetchedAt: string
+  minAmount: number
+  maxAmount: number | null
+  remainingCapacity: number | null
+  status: EarnOfferStatus
+  termDays: number | null
+  isFlexible: boolean
+  isPromo: boolean
+  newUserOnly: boolean
+  requiresAuth: boolean
+  regionNotes: string[]
   tiers: AprTier[]
-  updatedAt: string
   notes?: string
-  isPromo?: boolean
 }
 
 export interface AllocationSegment {
@@ -90,9 +134,44 @@ export interface FlatTierSegment {
   exchangeId: ExchangeId
   asset: StableAsset
   productType: EarnProductType
+  source: EarnOfferSource
+  sourceUrl: string | null
   apr: number
   capacity: number
   minAmount: number
   maxAmount: number | null
+  remainingCapacity: number | null
+  status: EarnOfferStatus
   isPromo: boolean
+}
+
+export interface CreateEarnOfferTierInput {
+  minAmount?: number
+  maxAmount: number | null
+  remainingCapacity?: number | null
+  status?: EarnOfferStatus
+  rate?: NormalizeEarnRateOptions
+  apr?: number
+}
+
+export interface CreateEarnOfferInput {
+  id: string
+  exchangeId: ExchangeId
+  asset: StableAsset
+  productType: EarnProductType
+  source?: EarnOfferSource
+  sourceUrl?: string | null
+  fetchedAt: string
+  minAmount?: number
+  maxAmount?: number | null
+  remainingCapacity?: number | null
+  status?: EarnOfferStatus
+  termDays?: number | null
+  isFlexible?: boolean
+  isPromo?: boolean
+  newUserOnly?: boolean
+  requiresAuth?: boolean
+  regionNotes?: string[]
+  tiers: CreateEarnOfferTierInput[]
+  notes?: string
 }

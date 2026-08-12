@@ -128,7 +128,7 @@
         "offersHeaders": {
           "productType": "Product type",
           "tiers": "APR tiers",
-          "updatedAt": "Updated"
+          "fetchedAt": "Fetched"
         }
       }
     },

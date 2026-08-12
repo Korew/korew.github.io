@@ -1,6 +1,7 @@
-import type { EarnOffer } from './types'
+import { createStableEarnOffer } from './helpers'
+import type { CreateEarnOfferInput, EarnOffer } from './types'
 
-export const stableEarnOffers: EarnOffer[] = [
+const stableEarnOfferInputs: CreateEarnOfferInput[] = [
   /* === BINANCE === */
   {
     id: 'binance-usdt-flex',
@@ -8,10 +9,10 @@ export const stableEarnOffers: EarnOffer[] = [
     asset: 'USDT',
     productType: 'flexible',
     tiers: [
-      { max: 200, apr: 3.84 },
-      { max: null, apr: 0.84 },
+      { maxAmount: 200, apr: 3.84 },
+      { maxAmount: null, apr: 0.84 },
     ],
-    updatedAt: '2026-03-12',
+    fetchedAt: '2026-03-12',
   },
   {
     id: 'binance-usdc-flex',
@@ -19,66 +20,66 @@ export const stableEarnOffers: EarnOffer[] = [
     asset: 'USDC',
     productType: 'flexible',
     tiers: [
-      { max: 200, apr: 5.5 },
-      { max: null, apr: 0.5 },
+      { maxAmount: 200, apr: 5.5 },
+      { maxAmount: null, apr: 0.5 },
     ],
-    updatedAt: '2026-03-12',
+    fetchedAt: '2026-03-12',
   },
   {
     id: 'binance-rlusd-flex',
     exchangeId: 'binance',
     asset: 'RLUSD',
     productType: 'flexible',
-    tiers: [{ max: 10000, apr: 8 }],
-    updatedAt: '2026-03-12',
+    tiers: [{ maxAmount: 10000, apr: 8 }],
+    fetchedAt: '2026-03-12',
   },
   {
     id: 'binance-usd1-flex',
     exchangeId: 'binance',
     asset: 'USD1',
     productType: 'flexible',
-    tiers: [{ max: null, apr: 0.27 }],
-    updatedAt: '2026-03-12',
+    tiers: [{ maxAmount: null, apr: 0.27 }],
+    fetchedAt: '2026-03-12',
   },
   {
     id: 'binance-xusd-flex',
     exchangeId: 'binance',
     asset: 'XUSD',
     productType: 'flexible',
-    tiers: [{ max: null, apr: 2.84 }],
-    updatedAt: '2026-03-12',
+    tiers: [{ maxAmount: null, apr: 2.84 }],
+    fetchedAt: '2026-03-12',
   },
   {
     id: 'binance-fdusd-flex',
     exchangeId: 'binance',
     asset: 'FDUSD',
     productType: 'flexible',
-    tiers: [{ max: null, apr: 0.42 }],
-    updatedAt: '2026-03-12',
+    tiers: [{ maxAmount: null, apr: 0.42 }],
+    fetchedAt: '2026-03-12',
   },
   {
     id: 'binance-tusd-flex',
     exchangeId: 'binance',
     asset: 'TUSD',
     productType: 'flexible',
-    tiers: [{ max: null, apr: 0.41 }],
-    updatedAt: '2026-03-12',
+    tiers: [{ maxAmount: null, apr: 0.41 }],
+    fetchedAt: '2026-03-12',
   },
   {
     id: 'binance-ustc-flex',
     exchangeId: 'binance',
     asset: 'USTC',
     productType: 'flexible',
-    tiers: [{ max: null, apr: 1.02 }],
-    updatedAt: '2026-03-12',
+    tiers: [{ maxAmount: null, apr: 1.02 }],
+    fetchedAt: '2026-03-12',
   },
   {
     id: 'binance-usdp-flex',
     exchangeId: 'binance',
     asset: 'USDP',
     productType: 'flexible',
-    tiers: [{ max: null, apr: 2.62 }],
-    updatedAt: '2026-03-12',
+    tiers: [{ maxAmount: null, apr: 2.62 }],
+    fetchedAt: '2026-03-12',
   },
 
   /* === BYBIT === */
@@ -88,10 +89,10 @@ export const stableEarnOffers: EarnOffer[] = [
     asset: 'USDT',
     productType: 'flexible',
     tiers: [
-      { max: 200, apr: 5.68 },
-      { max: null, apr: 0.68 },
+      { maxAmount: 200, apr: 5.68 },
+      { maxAmount: null, apr: 0.68 },
     ],
-    updatedAt: '2026-03-10',
+    fetchedAt: '2026-03-10',
   },
   {
     id: 'bybit-usdc-flex',
@@ -99,10 +100,10 @@ export const stableEarnOffers: EarnOffer[] = [
     asset: 'USDC',
     productType: 'flexible',
     tiers: [
-      { max: 200, apr: 5.8 },
-      { max: null, apr: 0.8 },
+      { maxAmount: 200, apr: 5.8 },
+      { maxAmount: null, apr: 0.8 },
     ],
-    updatedAt: '2026-03-10',
+    fetchedAt: '2026-03-10',
   },
   {
     id: 'bybit-dai-flex',
@@ -110,10 +111,10 @@ export const stableEarnOffers: EarnOffer[] = [
     asset: 'DAI',
     productType: 'flexible',
     tiers: [
-      { max: 500, apr: 5 },
-      { max: null, apr: 1 },
+      { maxAmount: 500, apr: 5 },
+      { maxAmount: null, apr: 1 },
     ],
-    updatedAt: '2026-03-10',
+    fetchedAt: '2026-03-10',
   },
 
   /* === MEXC === */
@@ -123,11 +124,11 @@ export const stableEarnOffers: EarnOffer[] = [
     asset: 'USDT',
     productType: 'flexible',
     tiers: [
-      { max: 300, apr: 15 },
-      { max: 100000, apr: 6 },
-      { max: null, apr: 1 },
+      { maxAmount: 300, apr: 15 },
+      { maxAmount: 100000, apr: 6 },
+      { maxAmount: null, apr: 1 },
     ],
-    updatedAt: '2026-03-10',
+    fetchedAt: '2026-03-10',
   },
   {
     id: 'mexc-usdc-flex',
@@ -135,11 +136,11 @@ export const stableEarnOffers: EarnOffer[] = [
     asset: 'USDC',
     productType: 'flexible',
     tiers: [
-      { max: 300, apr: 12 },
-      { max: 50000, apr: 3.5 },
-      { max: null, apr: 2 },
+      { maxAmount: 300, apr: 12 },
+      { maxAmount: 50000, apr: 3.5 },
+      { maxAmount: null, apr: 2 },
     ],
-    updatedAt: '2026-03-10',
+    fetchedAt: '2026-03-10',
   },
 
   /* === BINGX === */
@@ -149,10 +150,10 @@ export const stableEarnOffers: EarnOffer[] = [
     asset: 'USDT',
     productType: 'flexible',
     tiers: [
-      { max: 300, apr: 10 },
-      { max: null, apr: 1 },
+      { maxAmount: 300, apr: 10 },
+      { maxAmount: null, apr: 1 },
     ],
-    updatedAt: '2026-03-10',
+    fetchedAt: '2026-03-10',
   },
   {
     id: 'bingx-usdc-flex',
@@ -160,10 +161,10 @@ export const stableEarnOffers: EarnOffer[] = [
     asset: 'USDC',
     productType: 'flexible',
     tiers: [
-      { max: 500, apr: 8 },
-      { max: null, apr: 1 },
+      { maxAmount: 500, apr: 8 },
+      { maxAmount: null, apr: 1 },
     ],
-    updatedAt: '2026-03-10',
+    fetchedAt: '2026-03-10',
   },
 
   /* === OKX === */
@@ -173,10 +174,10 @@ export const stableEarnOffers: EarnOffer[] = [
     asset: 'USDC',
     productType: 'flexible',
     tiers: [
-      { max: 500, apr: 10 },
-      { max: null, apr: 1.16 },
+      { maxAmount: 500, apr: 10 },
+      { maxAmount: null, apr: 1.16 },
     ],
-    updatedAt: '2026-03-10',
+    fetchedAt: '2026-03-10',
   },
 
   /* === KUCOIN === */
@@ -185,40 +186,40 @@ export const stableEarnOffers: EarnOffer[] = [
     exchangeId: 'kucoin',
     asset: 'USDT',
     productType: 'flexible',
-    tiers: [{ max: null, apr: 0.9 }],
-    updatedAt: '2026-03-10',
+    tiers: [{ maxAmount: null, apr: 0.9 }],
+    fetchedAt: '2026-03-10',
   },
   {
     id: 'kucoin-usdc-flex',
     exchangeId: 'kucoin',
     asset: 'USDC',
     productType: 'flexible',
-    tiers: [{ max: null, apr: 0.68 }],
-    updatedAt: '2026-03-10',
+    tiers: [{ maxAmount: null, apr: 0.68 }],
+    fetchedAt: '2026-03-10',
   },
   {
     id: 'kucoin-usdd-flex',
     exchangeId: 'kucoin',
     asset: 'USDD',
     productType: 'flexible',
-    tiers: [{ max: null, apr: 8 }],
-    updatedAt: '2026-03-10',
+    tiers: [{ maxAmount: null, apr: 8 }],
+    fetchedAt: '2026-03-10',
   },
   {
     id: 'kucoin-usde-flex',
     exchangeId: 'kucoin',
     asset: 'USDE',
     productType: 'flexible',
-    tiers: [{ max: null, apr: 3.5 }],
-    updatedAt: '2026-03-10',
+    tiers: [{ maxAmount: null, apr: 3.5 }],
+    fetchedAt: '2026-03-10',
   },
   {
     id: 'kucoin-tusd-flex',
     exchangeId: 'kucoin',
     asset: 'TUSD',
     productType: 'flexible',
-    tiers: [{ max: null, apr: 0.35 }],
-    updatedAt: '2026-03-10',
+    tiers: [{ maxAmount: null, apr: 0.35 }],
+    fetchedAt: '2026-03-10',
   },
 
   /* === BITGET === */
@@ -228,10 +229,10 @@ export const stableEarnOffers: EarnOffer[] = [
     asset: 'USDT',
     productType: 'flexible',
     tiers: [
-      { max: 300, apr: 9.88 },
-      { max: null, apr: 0.88 },
+      { maxAmount: 300, apr: 9.88 },
+      { maxAmount: null, apr: 0.88 },
     ],
-    updatedAt: '2026-03-10',
+    fetchedAt: '2026-03-10',
   },
   {
     id: 'bitget-usdc-flexible',
@@ -239,34 +240,34 @@ export const stableEarnOffers: EarnOffer[] = [
     asset: 'USDC',
     productType: 'flexible',
     tiers: [
-      { max: 500, apr: 8.88 },
-      { max: null, apr: 1.68 },
+      { maxAmount: 500, apr: 8.88 },
+      { maxAmount: null, apr: 1.68 },
     ],
-    updatedAt: '2026-03-10',
+    fetchedAt: '2026-03-10',
   },
   {
     id: 'bitget-usd1-flexible',
     exchangeId: 'bitget',
     asset: 'USD1',
     productType: 'flexible',
-    tiers: [{ max: null, apr: 1 }],
-    updatedAt: '2026-03-10',
+    tiers: [{ maxAmount: null, apr: 1 }],
+    fetchedAt: '2026-03-10',
   },
   {
     id: 'bitget-dai-flexible',
     exchangeId: 'bitget',
     asset: 'DAI',
     productType: 'flexible',
-    tiers: [{ max: null, apr: 0.5 }],
-    updatedAt: '2026-03-10',
+    tiers: [{ maxAmount: null, apr: 0.5 }],
+    fetchedAt: '2026-03-10',
   },
   {
     id: 'bitget-usds-flexible',
     exchangeId: 'bitget',
     asset: 'USDS',
     productType: 'flexible',
-    tiers: [{ max: null, apr: 5 }],
-    updatedAt: '2026-03-10',
+    tiers: [{ maxAmount: null, apr: 5 }],
+    fetchedAt: '2026-03-10',
   },
 
   /* === HTX === */
@@ -276,34 +277,34 @@ export const stableEarnOffers: EarnOffer[] = [
     asset: 'USDT',
     productType: 'flexible',
     tiers: [
-      { max: 500, apr: 10 },
-      { max: null, apr: 2.5 },
+      { maxAmount: 500, apr: 10 },
+      { maxAmount: null, apr: 2.5 },
     ],
-    updatedAt: '2026-03-10',
+    fetchedAt: '2026-03-10',
   },
   {
     id: 'htx-usdc-flex',
     exchangeId: 'htx',
     asset: 'USDC',
     productType: 'flexible',
-    tiers: [{ max: null, apr: 5 }],
-    updatedAt: '2026-03-10',
+    tiers: [{ maxAmount: null, apr: 5 }],
+    fetchedAt: '2026-03-10',
   },
   {
     id: 'htx-usde-flex',
     exchangeId: 'htx',
     asset: 'USDE',
     productType: 'flexible',
-    tiers: [{ max: null, apr: 5 }],
-    updatedAt: '2026-03-10',
+    tiers: [{ maxAmount: null, apr: 5 }],
+    fetchedAt: '2026-03-10',
   },
   {
     id: 'htx-usdd-flex',
     exchangeId: 'htx',
     asset: 'USDD',
     productType: 'flexible',
-    tiers: [{ max: null, apr: 5 }],
-    updatedAt: '2026-03-10',
+    tiers: [{ maxAmount: null, apr: 5 }],
+    fetchedAt: '2026-03-10',
   },
   {
     id: 'htx-usd1-flex',
@@ -311,10 +312,10 @@ export const stableEarnOffers: EarnOffer[] = [
     asset: 'USD1',
     productType: 'flexible',
     tiers: [
-      { max: 500, apr: 15 },
-      { max: null, apr: 4 },
+      { maxAmount: 500, apr: 15 },
+      { maxAmount: null, apr: 4 },
     ],
-    updatedAt: '2026-03-10',
+    fetchedAt: '2026-03-10',
   },
 
   /* === XT === */
@@ -324,11 +325,11 @@ export const stableEarnOffers: EarnOffer[] = [
     asset: 'USDT',
     productType: 'flexible',
     tiers: [
-      { max: 200, apr: 12 },
-      { max: 500, apr: 7 },
-      { max: null, apr: 2.3 },
+      { maxAmount: 200, apr: 12 },
+      { maxAmount: 500, apr: 7 },
+      { maxAmount: null, apr: 2.3 },
     ],
-    updatedAt: '2026-03-10',
+    fetchedAt: '2026-03-10',
   },
   {
     id: 'xt-usdc-flex',
@@ -336,17 +337,21 @@ export const stableEarnOffers: EarnOffer[] = [
     asset: 'USDC',
     productType: 'flexible',
     tiers: [
-      { max: 500, apr: 15 },
-      { max: null, apr: 2.5 },
+      { maxAmount: 500, apr: 15 },
+      { maxAmount: null, apr: 2.5 },
     ],
-    updatedAt: '2026-03-10',
+    fetchedAt: '2026-03-10',
   },
   {
     id: 'xt-dai-flex',
     exchangeId: 'xt',
     asset: 'DAI',
     productType: 'flexible',
-    tiers: [{ max: null, apr: 1 }],
-    updatedAt: '2026-03-10',
+    tiers: [{ maxAmount: null, apr: 1 }],
+    fetchedAt: '2026-03-10',
   },
 ]
+
+export const stableEarnOffers: EarnOffer[] = stableEarnOfferInputs.map(
+  createStableEarnOffer
+)

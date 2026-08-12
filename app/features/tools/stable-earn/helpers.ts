@@ -1,9 +1,14 @@
 import type {
   AllocationResult,
   AllocationSegment,
+  AprTier,
+  CreateEarnOfferInput,
+  CreateEarnOfferTierInput,
   EarnOffer,
   ExchangeId,
   FlatTierSegment,
+  NormalizeEarnRateOptions,
+  NormalizedEarnRate,
   StableAsset,
 } from './types'
 
@@ -15,6 +20,82 @@ export interface AllocateStableEarnOptions {
 }
 
 const INFINITE_CAPACITY = Number.POSITIVE_INFINITY
+
+export function normalizeEarnRate(
+  options: NormalizeEarnRateOptions
+): NormalizedEarnRate {
+  const rawNumericValue = parseRateValue(options.value)
+  const annualRatePercent = toAnnualRatePercent(
+    rawNumericValue,
+    options.valueFormat
+  )
+
+  if (annualRatePercent < 0) {
+    throw new Error('Earn rate cannot be negative')
+  }
+
+  if (options.kind === 'apr') {
+    return {
+      kind: options.kind,
+      rawValue: options.value,
+      valueFormat: options.valueFormat,
+      annualRatePercent,
+      apr: annualRatePercent,
+      compoundingPeriodsPerYear: null,
+    }
+  }
+
+  const compoundingPeriodsPerYear = options.compoundingPeriodsPerYear
+
+  if (
+    compoundingPeriodsPerYear === undefined ||
+    !Number.isFinite(compoundingPeriodsPerYear) ||
+    compoundingPeriodsPerYear <= 0
+  ) {
+    throw new Error('APY normalization requires compoundingPeriodsPerYear')
+  }
+
+  return {
+    kind: options.kind,
+    rawValue: options.value,
+    valueFormat: options.valueFormat,
+    annualRatePercent,
+    apr: apyToApr(annualRatePercent, compoundingPeriodsPerYear),
+    compoundingPeriodsPerYear,
+  }
+}
+
+export function createStableEarnOffer(input: CreateEarnOfferInput): EarnOffer {
+  const status = input.status ?? 'available'
+  const minAmount = input.minAmount ?? 0
+  const tiers = createStableEarnTiers(input.tiers, minAmount, status)
+  const lastTier = tiers.at(-1)
+
+  return {
+    id: input.id,
+    exchangeId: input.exchangeId,
+    asset: input.asset,
+    productType: input.productType,
+    source: input.source ?? 'manual',
+    sourceUrl: input.sourceUrl ?? null,
+    fetchedAt: input.fetchedAt,
+    minAmount,
+    maxAmount:
+      input.maxAmount === undefined
+        ? lastTier?.maxAmount ?? null
+        : input.maxAmount,
+    remainingCapacity: input.remainingCapacity ?? null,
+    status,
+    termDays: input.termDays ?? null,
+    isFlexible: input.isFlexible ?? input.productType === 'flexible',
+    isPromo: input.isPromo ?? false,
+    newUserOnly: input.newUserOnly ?? false,
+    requiresAuth: input.requiresAuth ?? false,
+    regionNotes: input.regionNotes ?? [],
+    tiers,
+    notes: input.notes,
+  }
+}
 
 export function flattenTierSegments(
   offers: EarnOffer[],
@@ -28,6 +109,10 @@ export function flattenTierSegments(
 
   return offers
     .filter(offer => {
+      if (offer.status !== 'available') {
+        return false
+      }
+
       if (asset && offer.asset !== asset) {
         return false
       }
@@ -40,37 +125,42 @@ export function flattenTierSegments(
     })
     .flatMap(offer => {
       const segments: FlatTierSegment[] = []
-      let currentMin = 0
 
       for (const tier of offer.tiers) {
-        const maxAmount = tier.max
-
-        if (maxAmount !== null && maxAmount <= currentMin) {
+        if (tier.status !== 'available') {
           continue
         }
 
-        const capacity =
+        const maxAmount = tier.maxAmount
+
+        if (maxAmount !== null && maxAmount <= tier.minAmount) {
+          continue
+        }
+
+        const rangeCapacity =
           maxAmount === null
             ? INFINITE_CAPACITY
-            : Math.max(0, maxAmount - currentMin)
+            : Math.max(0, maxAmount - tier.minAmount)
+        const capacity =
+          tier.remainingCapacity === null
+            ? rangeCapacity
+            : Math.min(rangeCapacity, tier.remainingCapacity)
 
         segments.push({
           offerId: offer.id,
           exchangeId: offer.exchangeId,
           asset: offer.asset,
           productType: offer.productType,
+          source: offer.source,
+          sourceUrl: offer.sourceUrl,
           apr: tier.apr,
           capacity,
-          minAmount: currentMin,
+          minAmount: tier.minAmount,
           maxAmount,
-          isPromo: Boolean(offer.isPromo),
+          remainingCapacity: tier.remainingCapacity,
+          status: tier.status,
+          isPromo: offer.isPromo,
         })
-
-        if (maxAmount === null) {
-          break
-        }
-
-        currentMin = maxAmount
       }
 
       return segments
@@ -155,4 +245,89 @@ function createEmptyResult(totalAmount: number): AllocationResult {
     estimatedDailyProfit: 0,
     segments: [],
   }
+}
+
+function createStableEarnTiers(
+  tiers: CreateEarnOfferTierInput[],
+  offerMinAmount: number,
+  offerStatus: EarnOffer['status']
+): AprTier[] {
+  let currentMinAmount = offerMinAmount
+
+  return tiers.map(tier => {
+    const minAmount = tier.minAmount ?? currentMinAmount
+    const maxAmount = tier.maxAmount
+
+    if (maxAmount !== null && maxAmount < minAmount) {
+      throw new Error('Tier maxAmount cannot be lower than minAmount')
+    }
+
+    const rate = normalizeTierRate(tier)
+
+    if (maxAmount !== null) {
+      currentMinAmount = maxAmount
+    }
+
+    return {
+      minAmount,
+      maxAmount,
+      remainingCapacity: tier.remainingCapacity ?? null,
+      apr: rate.apr,
+      rate,
+      status: tier.status ?? offerStatus,
+    }
+  })
+}
+
+function normalizeTierRate(tier: CreateEarnOfferTierInput): NormalizedEarnRate {
+  if (tier.rate) {
+    return normalizeEarnRate(tier.rate)
+  }
+
+  if (tier.apr === undefined) {
+    throw new Error('Tier must include either rate or apr')
+  }
+
+  return normalizeEarnRate({
+    value: tier.apr,
+    kind: 'apr',
+    valueFormat: 'percent',
+  })
+}
+
+function parseRateValue(value: number | string): number {
+  const parsedValue =
+    typeof value === 'string' ? Number(value.replace('%', '').trim()) : value
+
+  if (!Number.isFinite(parsedValue)) {
+    throw new Error('Earn rate value must be a finite number')
+  }
+
+  return parsedValue
+}
+
+function toAnnualRatePercent(
+  value: number,
+  valueFormat: NormalizeEarnRateOptions['valueFormat']
+): number {
+  if (valueFormat === 'decimal') {
+    return value * 100
+  }
+
+  if (valueFormat === 'basisPoints') {
+    return value / 100
+  }
+
+  return value
+}
+
+function apyToApr(
+  annualRatePercent: number,
+  compoundingPeriodsPerYear: number
+): number {
+  const annualRateDecimal = annualRatePercent / 100
+  const periodRate =
+    Math.pow(1 + annualRateDecimal, 1 / compoundingPeriodsPerYear) - 1
+
+  return periodRate * compoundingPeriodsPerYear * 100
 }

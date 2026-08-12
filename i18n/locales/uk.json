@@ -128,7 +128,7 @@
         "offersHeaders": {
           "productType": "Тип продукту",
           "tiers": "Рівні APR",
-          "updatedAt": "Оновлено"
+          "fetchedAt": "Отримано"
         }
       }
     },

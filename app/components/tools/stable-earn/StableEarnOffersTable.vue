@@ -17,7 +17,7 @@
               {{ t('pages.tools.stableEarn.offersHeaders.tiers') }}
             </th>
             <th class="px-4 py-3 font-medium">
-              {{ t('pages.tools.stableEarn.offersHeaders.updatedAt') }}
+              {{ t('pages.tools.stableEarn.offersHeaders.fetchedAt') }}
             </th>
             <th class="px-4 py-3 font-medium">
               {{ t('pages.tools.stableEarn.referralLink') }}
@@ -51,14 +51,14 @@
               <ul class="space-y-1">
                 <li
                   v-for="tier in offer.tiers"
-                  :key="`${offer.id}-${tier.max ?? 'max'}`"
+                  :key="`${offer.id}-${tier.maxAmount ?? 'max'}`"
                 >
-                  {{ formatTier(offer.tiers, tier) }}
+                  {{ formatTier(tier) }}
                 </li>
               </ul>
             </td>
             <td class="px-4 py-3">
-              {{ offer.updatedAt }}
+              {{ offer.fetchedAt }}
             </td>
             <td class="px-4 py-3">
               <a
@@ -108,13 +108,10 @@ const exchangeById = computed<Record<ExchangeId, ExchangeItem | undefined>>(
   }
 )
 
-function formatTier(tiers: AprTier[], tier: AprTier): string {
-  const tierIndex = tiers.indexOf(tier)
-  const previousTier = tierIndex > 0 ? tiers[tierIndex - 1] : undefined
-  const minAmount = previousTier?.max ?? 0
-  const minLabel = props.formatCurrency(minAmount)
+function formatTier(tier: AprTier): string {
+  const minLabel = props.formatCurrency(tier.minAmount)
 
-  if (tier.max === null) {
+  if (tier.maxAmount === null) {
     const fromLabel = t('pages.tools.stableEarn.fromAmount')
     const aboveLabel = t('pages.tools.stableEarn.aboveAmount')
     const aprLabel = props.formatPercent(tier.apr)
@@ -122,7 +119,7 @@ function formatTier(tiers: AprTier[], tier: AprTier): string {
     return `${fromLabel} ${minLabel} ${aboveLabel}: ${aprLabel}`
   }
 
-  const maxLabel = props.formatCurrency(tier.max)
+  const maxLabel = props.formatCurrency(tier.maxAmount)
 
   return `${minLabel} - ${maxLabel}: ${props.formatPercent(tier.apr)}`
 }
