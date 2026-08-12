@@ -93,10 +93,10 @@
         "title": "Tool: {slug}",
         "description": "Detailed information about this tool."
       },
-      "stableYield": {
-        "title": "Stable Yield Splitter",
-        "subtitle": "Estimate how to split stablecoins across exchanges and APR tiers for better projected yield.",
-        "description": "Use this estimator to distribute your stablecoins across current offers. APR values are annual rates and estimates only.",
+      "stableEarn": {
+        "title": "Stable Earn Planner",
+        "subtitle": "Estimate how to split stablecoins across exchanges and APR tiers for better projected returns.",
+        "description": "Use this estimator to distribute your stablecoins across current CEX Earn offers. APR values are annual rates and estimates only.",
         "amount": "Amount (USD)",
         "asset": "Asset",
         "allAssets": "All assets",
@@ -107,7 +107,7 @@
         "estimatedYearlyIncome": "Estimated yearly income",
         "allocation": "Allocation",
         "currentOffers": "Current offers",
-        "manuallyUpdated": "Manually updated once per day",
+        "manuallyUpdated": "Earn rates updated manually once per day",
         "referralLink": "Referral",
         "openExchange": "Open exchange",
         "noResults": "No matching results for current filters.",
@@ -119,7 +119,7 @@
         "fromAmount": "From",
         "aboveAmount": "and above",
         "disclaimerTitle": "Disclaimer",
-        "disclaimerText": "This tool provides estimated returns based on manually maintained APR data. It does not guarantee income, and actual rates can change at any time.",
+        "disclaimerText": "This tool provides estimated returns based on manually maintained Stable Earn APR data. It does not guarantee income, and actual rates can change at any time.",
         "allocationHeaders": {
           "exchange": "Exchange",
           "amount": "Allocated amount",

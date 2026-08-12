@@ -7,7 +7,7 @@ import type {
   StableAsset,
 } from './types'
 
-export interface AllocateStableYieldOptions {
+export interface AllocateStableEarnOptions {
   totalAmount: number
   offers: EarnOffer[]
   asset?: StableAsset
@@ -77,8 +77,8 @@ export function flattenTierSegments(
     })
 }
 
-export function allocateStableYield(
-  options: AllocateStableYieldOptions
+export function allocateStableEarn(
+  options: AllocateStableEarnOptions
 ): AllocationResult {
   const safeAmount = Number.isFinite(options.totalAmount)
     ? Math.max(0, options.totalAmount)

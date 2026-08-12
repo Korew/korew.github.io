@@ -2,15 +2,15 @@
   <div class="mx-auto max-w-6xl space-y-8 px-4 py-8 sm:px-6 lg:px-8">
     <header class="space-y-3">
       <h1 class="text-3xl font-semibold text-slate-900 sm:text-4xl">
-        {{ t('pages.tools.stableYield.title') }}
+        {{ t('pages.tools.stableEarn.title') }}
       </h1>
       <p class="max-w-3xl text-slate-600">
-        {{ t('pages.tools.stableYield.description') }}
+        {{ t('pages.tools.stableEarn.description') }}
       </p>
       <p
         class="inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800"
       >
-        {{ t('pages.tools.stableYield.manuallyUpdated') }}
+        {{ t('pages.tools.stableEarn.manuallyUpdated') }}
       </p>
     </header>
 
@@ -19,18 +19,18 @@
     >
       <label class="space-y-2 sm:col-span-2 lg:col-span-1">
         <span class="text-sm font-medium text-slate-700">
-          {{ t('pages.tools.stableYield.amount') }}
+          {{ t('pages.tools.stableEarn.amount') }}
         </span>
         <UiInput v-model="amount" min="0" step="50" type="number" />
       </label>
 
       <label class="space-y-2">
         <span class="text-sm font-medium text-slate-700">
-          {{ t('pages.tools.stableYield.asset') }}
+          {{ t('pages.tools.stableEarn.asset') }}
         </span>
         <UiSelect v-model="selectedAsset">
           <option value="ALL">
-            {{ t('pages.tools.stableYield.allAssets') }}
+            {{ t('pages.tools.stableEarn.allAssets') }}
           </option>
           <option v-for="asset in stableAssets" :key="asset" :value="asset">
             {{ asset }}
@@ -40,7 +40,7 @@
 
       <fieldset class="space-y-2 sm:col-span-2 lg:col-span-1">
         <legend class="text-sm font-medium text-slate-700">
-          {{ t('pages.tools.stableYield.exchanges') }}
+          {{ t('pages.tools.stableEarn.exchanges') }}
         </legend>
         <div class="grid max-h-48 grid-cols-2 gap-2 overflow-y-auto pr-1">
           <UiCheckbox
@@ -56,30 +56,30 @@
     </section>
 
     <section class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-      <ToolsStableYieldSummaryCard
-        :label="t('pages.tools.stableYield.weightedApr')"
+      <ToolsStableEarnSummaryCard
+        :label="t('pages.tools.stableEarn.weightedApr')"
         :value="
           hasValidAmount ? formatPercent(allocationResult.weightedApr) : '0.00%'
         "
       />
-      <ToolsStableYieldSummaryCard
-        :label="t('pages.tools.stableYield.estimatedDailyIncome')"
+      <ToolsStableEarnSummaryCard
+        :label="t('pages.tools.stableEarn.estimatedDailyIncome')"
         :value="
           hasValidAmount
             ? formatCurrency(allocationResult.estimatedDailyProfit)
             : formatCurrency(0)
         "
       />
-      <ToolsStableYieldSummaryCard
-        :label="t('pages.tools.stableYield.estimatedMonthlyIncome')"
+      <ToolsStableEarnSummaryCard
+        :label="t('pages.tools.stableEarn.estimatedMonthlyIncome')"
         :value="
           hasValidAmount
             ? formatCurrency(allocationResult.estimatedMonthlyProfit)
             : formatCurrency(0)
         "
       />
-      <ToolsStableYieldSummaryCard
-        :label="t('pages.tools.stableYield.estimatedYearlyIncome')"
+      <ToolsStableEarnSummaryCard
+        :label="t('pages.tools.stableEarn.estimatedYearlyIncome')"
         :value="
           hasValidAmount
             ? formatCurrency(allocationResult.estimatedYearlyProfit)
@@ -90,24 +90,24 @@
 
     <section class="space-y-3">
       <h2 class="text-xl font-semibold text-slate-900">
-        {{ t('pages.tools.stableYield.allocation') }}
+        {{ t('pages.tools.stableEarn.allocation') }}
       </h2>
 
       <p
         v-if="!hasValidAmount"
         class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-slate-600"
       >
-        {{ t('pages.tools.stableYield.enterAmountHint') }}
+        {{ t('pages.tools.stableEarn.enterAmountHint') }}
       </p>
 
       <p
         v-else-if="allocationResult.segments.length === 0"
         class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-slate-600"
       >
-        {{ t('pages.tools.stableYield.noResults') }}
+        {{ t('pages.tools.stableEarn.noResults') }}
       </p>
 
-      <ToolsStableYieldAllocationTable
+      <ToolsStableEarnAllocationTable
         v-else
         :exchanges="activeExchanges"
         :format-currency="formatCurrency"
@@ -118,17 +118,17 @@
 
     <section class="space-y-3">
       <h2 class="text-xl font-semibold text-slate-900">
-        {{ t('pages.tools.stableYield.currentOffers') }}
+        {{ t('pages.tools.stableEarn.currentOffers') }}
       </h2>
 
       <p
         v-if="filteredOffers.length === 0"
         class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-slate-600"
       >
-        {{ t('pages.tools.stableYield.noResults') }}
+        {{ t('pages.tools.stableEarn.noResults') }}
       </p>
 
-      <ToolsStableYieldOffersTable
+      <ToolsStableEarnOffersTable
         v-else
         :exchanges="activeExchanges"
         :format-currency="formatCurrency"
@@ -141,20 +141,23 @@
       class="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600"
     >
       <h3 class="font-semibold text-slate-800">
-        {{ t('pages.tools.stableYield.disclaimerTitle') }}
+        {{ t('pages.tools.stableEarn.disclaimerTitle') }}
       </h3>
       <p class="mt-2">
-        {{ t('pages.tools.stableYield.disclaimerText') }}
+        {{ t('pages.tools.stableEarn.disclaimerText') }}
       </p>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { stableYieldOffers } from './utils/data'
-import { stableYieldExchanges } from './utils/const'
-import { allocateStableYield } from './utils/helpers'
-import type { ExchangeId, StableAsset } from './utils/types'
+import { stableEarnOffers } from '../../../features/tools/stable-earn/data'
+import { stableEarnExchanges } from '../../../features/tools/stable-earn/const'
+import { allocateStableEarn } from '../../../features/tools/stable-earn/helpers'
+import type {
+  ExchangeId,
+  StableAsset,
+} from '../../../features/tools/stable-earn/types'
 
 const { t, locale } = useI18n()
 
@@ -163,7 +166,7 @@ const stableAssets: StableAsset[] = ['USDT', 'USDC', 'DAI']
 const selectedAsset = ref<'ALL' | StableAsset>('ALL')
 
 const activeExchanges = computed(() => {
-  return [...stableYieldExchanges].filter(exchange => exchange.isActive)
+  return [...stableEarnExchanges].filter(exchange => exchange.isActive)
 })
 
 const selectedExchangeIds = ref<ExchangeId[]>(
@@ -189,7 +192,7 @@ const selectedAssetFilter = computed<StableAsset | undefined>(() => {
 const filteredOffers = computed(() => {
   const selectedSet = new Set<ExchangeId>(selectedExchangeIds.value)
 
-  return stableYieldOffers.filter(offer => {
+  return stableEarnOffers.filter(offer => {
     if (!selectedSet.has(offer.exchangeId)) {
       return false
     }
@@ -206,9 +209,9 @@ const filteredOffers = computed(() => {
 })
 
 const allocationResult = computed(() => {
-  return allocateStableYield({
+  return allocateStableEarn({
     totalAmount: normalizedAmount.value,
-    offers: stableYieldOffers,
+    offers: stableEarnOffers,
     asset: selectedAssetFilter.value,
     allowedExchangeIds: selectedExchangeIds.value,
   })
@@ -241,8 +244,8 @@ function formatPercent(value: number): string {
   return `${percentFormatter.value.format(value)}%`
 }
 
-const pageTitle = computed(() => t('pages.tools.stableYield.title'))
-const pageDescription = computed(() => t('pages.tools.stableYield.subtitle'))
+const pageTitle = computed(() => t('pages.tools.stableEarn.title'))
+const pageDescription = computed(() => t('pages.tools.stableEarn.subtitle'))
 
 useHead(() => ({
   title: pageTitle.value,

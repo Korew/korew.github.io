@@ -5,22 +5,22 @@
         <thead class="bg-slate-50 text-left text-slate-600">
           <tr>
             <th class="px-4 py-3 font-medium">
-              {{ t('pages.tools.stableYield.allocationHeaders.exchange') }}
+              {{ t('pages.tools.stableEarn.allocationHeaders.exchange') }}
             </th>
             <th class="px-4 py-3 font-medium">
-              {{ t('pages.tools.stableYield.asset') }}
+              {{ t('pages.tools.stableEarn.asset') }}
             </th>
             <th class="px-4 py-3 font-medium">
-              {{ t('pages.tools.stableYield.offersHeaders.productType') }}
+              {{ t('pages.tools.stableEarn.offersHeaders.productType') }}
             </th>
             <th class="px-4 py-3 font-medium">
-              {{ t('pages.tools.stableYield.offersHeaders.tiers') }}
+              {{ t('pages.tools.stableEarn.offersHeaders.tiers') }}
             </th>
             <th class="px-4 py-3 font-medium">
-              {{ t('pages.tools.stableYield.offersHeaders.updatedAt') }}
+              {{ t('pages.tools.stableEarn.offersHeaders.updatedAt') }}
             </th>
             <th class="px-4 py-3 font-medium">
-              {{ t('pages.tools.stableYield.referralLink') }}
+              {{ t('pages.tools.stableEarn.referralLink') }}
             </th>
           </tr>
         </thead>
@@ -44,7 +44,7 @@
               <span
                 class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700"
               >
-                {{ t(`pages.tools.stableYield.${offer.productType}`) }}
+                {{ t(`pages.tools.stableEarn.${offer.productType}`) }}
               </span>
             </td>
             <td class="px-4 py-3 min-w-72">
@@ -67,7 +67,7 @@
                 rel="nofollow noopener noreferrer"
                 target="_blank"
               >
-                {{ t('pages.tools.stableYield.openExchange') }}
+                {{ t('pages.tools.stableEarn.openExchange') }}
               </a>
             </td>
           </tr>
@@ -83,7 +83,7 @@ import type {
   EarnOffer,
   ExchangeId,
   ExchangeItem,
-} from '../../../../types/stable-yield'
+} from '../../../features/tools/stable-earn/types'
 
 interface Props {
   offers: EarnOffer[]
@@ -115,8 +115,8 @@ function formatTier(tiers: AprTier[], tier: AprTier): string {
   const minLabel = props.formatCurrency(minAmount)
 
   if (tier.max === null) {
-    const fromLabel = t('pages.tools.stableYield.fromAmount')
-    const aboveLabel = t('pages.tools.stableYield.aboveAmount')
+    const fromLabel = t('pages.tools.stableEarn.fromAmount')
+    const aboveLabel = t('pages.tools.stableEarn.aboveAmount')
     const aprLabel = props.formatPercent(tier.apr)
 
     return `${fromLabel} ${minLabel} ${aboveLabel}: ${aprLabel}`

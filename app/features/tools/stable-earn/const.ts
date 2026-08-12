@@ -1,6 +1,6 @@
 import type { ExchangeItem } from './types'
 
-export const stableYieldExchanges: ExchangeItem[] = [
+export const stableEarnExchanges: ExchangeItem[] = [
   {
     id: 'binance',
     name: 'Binance',

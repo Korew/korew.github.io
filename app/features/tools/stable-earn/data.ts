@@ -1,6 +1,6 @@
 import type { EarnOffer } from './types'
 
-export const stableYieldOffers: EarnOffer[] = [
+export const stableEarnOffers: EarnOffer[] = [
   /* === BINANCE === */
   {
     id: 'binance-usdt-flex',

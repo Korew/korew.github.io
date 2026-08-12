@@ -5,22 +5,22 @@
         <thead class="bg-slate-50 text-left text-slate-600">
           <tr>
             <th class="px-4 py-3 font-medium">
-              {{ t('pages.tools.stableYield.allocationHeaders.exchange') }}
+              {{ t('pages.tools.stableEarn.allocationHeaders.exchange') }}
             </th>
             <th class="px-4 py-3 font-medium">
-              {{ t('pages.tools.stableYield.asset') }}
+              {{ t('pages.tools.stableEarn.asset') }}
             </th>
             <th class="px-4 py-3 font-medium">
-              {{ t('pages.tools.stableYield.allocationHeaders.amount') }}
+              {{ t('pages.tools.stableEarn.allocationHeaders.amount') }}
             </th>
             <th class="px-4 py-3 font-medium">
-              {{ t('pages.tools.stableYield.allocationHeaders.apr') }}
+              {{ t('pages.tools.stableEarn.allocationHeaders.apr') }}
             </th>
             <th class="px-4 py-3 font-medium">
-              {{ t('pages.tools.stableYield.estimatedDailyIncome') }}
+              {{ t('pages.tools.stableEarn.estimatedDailyIncome') }}
             </th>
             <th class="px-4 py-3 font-medium">
-              {{ t('pages.tools.stableYield.referralLink') }}
+              {{ t('pages.tools.stableEarn.referralLink') }}
             </th>
           </tr>
         </thead>
@@ -52,7 +52,7 @@
                 rel="nofollow noopener noreferrer"
                 target="_blank"
               >
-                {{ t('pages.tools.stableYield.openExchange') }}
+                {{ t('pages.tools.stableEarn.openExchange') }}
               </a>
             </td>
           </tr>
@@ -67,7 +67,7 @@ import type {
   AllocationSegment,
   ExchangeId,
   ExchangeItem,
-} from '../../../../types/stable-yield'
+} from '../../../features/tools/stable-earn/types'
 
 interface Props {
   segments: AllocationSegment[]
