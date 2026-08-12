@@ -1,44 +1,71 @@
 <template>
-  <div class="mx-auto max-w-6xl space-y-8 px-4 py-8 sm:px-6 lg:px-8">
-    <header class="space-y-3">
-      <h1 class="text-3xl font-semibold text-slate-900 sm:text-4xl">
-        {{ t('pages.tools.stableEarn.title') }}
-      </h1>
-      <p class="max-w-3xl text-slate-600">
-        {{ t('pages.tools.stableEarn.description') }}
-      </p>
-      <p
-        class="inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800"
+  <div class="mx-auto max-w-7xl space-y-6 px-4 py-6 sm:px-6 lg:px-8">
+    <header class="space-y-4">
+      <nav
+        class="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white p-1 shadow-sm"
+        :aria-label="t('pages.tools.stableEarn.languageSwitcher')"
       >
-        {{ t('pages.tools.stableEarn.manuallyUpdated') }}
-      </p>
+        <Icon
+          aria-hidden="true"
+          class="mx-2 size-4 text-slate-500"
+          name="lucide:languages"
+        />
+        <NuxtLink
+          v-for="language in availableLocales"
+          :key="language.code"
+          class="inline-flex min-h-8 min-w-10 items-center justify-center rounded-md px-2 text-sm font-semibold text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+          :class="{
+            'bg-slate-900 text-white hover:bg-slate-900 hover:text-white':
+              locale === language.code,
+          }"
+          :to="localePath('/tools/stable-earn', language.code)"
+        >
+          {{ language.code.toUpperCase() }}
+        </NuxtLink>
+      </nav>
+
+      <div class="space-y-3">
+        <h1 class="text-2xl font-semibold text-slate-900 sm:text-4xl">
+          {{ t('pages.tools.stableEarn.title') }}
+        </h1>
+        <p class="max-w-3xl text-slate-600">
+          {{ t('pages.tools.stableEarn.description') }}
+        </p>
+        <p
+          class="inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800"
+        >
+          {{ t('pages.tools.stableEarn.manuallyUpdated') }}
+        </p>
+      </div>
     </header>
 
     <section
-      class="grid gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:grid-cols-2 lg:grid-cols-3"
+      class="grid gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)_minmax(0,1.6fr)]"
     >
-      <label class="space-y-2 sm:col-span-2 lg:col-span-1">
+      <label class="space-y-2">
         <span class="text-sm font-medium text-slate-700">
           {{ t('pages.tools.stableEarn.amount') }}
         </span>
         <UiInput v-model="amount" min="0" step="50" type="number" />
       </label>
 
-      <label class="space-y-2">
-        <span class="text-sm font-medium text-slate-700">
+      <fieldset class="space-y-2">
+        <legend class="text-sm font-medium text-slate-700">
           {{ t('pages.tools.stableEarn.asset') }}
-        </span>
-        <UiSelect v-model="selectedAsset">
-          <option value="ALL">
-            {{ t('pages.tools.stableEarn.allAssets') }}
-          </option>
-          <option v-for="asset in stableAssets" :key="asset" :value="asset">
-            {{ asset }}
-          </option>
-        </UiSelect>
-      </label>
+        </legend>
+        <div class="grid max-h-48 grid-cols-2 gap-2 overflow-y-auto pr-1 sm:grid-cols-3 lg:grid-cols-2">
+          <UiCheckbox
+            v-for="asset in stableAssets"
+            :key="asset"
+            v-model="selectedAssets"
+            :label="asset"
+            :value="asset"
+            class="rounded-lg border border-slate-200 px-2 py-1.5 text-sm text-slate-700"
+          />
+        </div>
+      </fieldset>
 
-      <fieldset class="space-y-2 sm:col-span-2 lg:col-span-1">
+      <fieldset class="space-y-2">
         <legend class="text-sm font-medium text-slate-700">
           {{ t('pages.tools.stableEarn.exchanges') }}
         </legend>
@@ -143,6 +170,7 @@
         v-else
         :exchanges="activeExchanges"
         :format-currency="formatCurrency"
+        :format-date="formatDate"
         :format-percent="formatPercent"
         :offers="filteredOffers"
       />
@@ -158,10 +186,28 @@
         {{ t('pages.tools.stableEarn.disclaimerText') }}
       </p>
     </section>
+
+    <footer
+      class="flex flex-col gap-3 border-t border-slate-200 py-6 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p>© {{ year }}. {{ t('Roman Korenchuk') }}</p>
+      <a
+        class="inline-flex w-fit items-center gap-2 rounded-md p-1 font-medium text-slate-500 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+        :aria-label="threadsLink.label"
+        :href="threadsLink.href"
+        rel="noopener noreferrer me"
+        target="_blank"
+        :title="threadsLink.label"
+      >
+        <Icon :name="threadsLink.icon" class="size-5" />
+        <span>{{ threadsLink.label }}</span>
+      </a>
+    </footer>
   </div>
 </template>
 
 <script setup lang="ts">
+import { socialLinks } from '../../../../data/social-links'
 import { stableEarnOffers } from '../../../features/tools/stable-earn/data'
 import { stableEarnExchanges } from '../../../features/tools/stable-earn/const'
 import { allocateStableEarn } from '../../../features/tools/stable-earn/helpers'
@@ -170,11 +216,28 @@ import type {
   StableAsset,
 } from '../../../features/tools/stable-earn/types'
 
-const { t, locale } = useI18n()
+definePageMeta({
+  layout: 'empty',
+})
 
+const { t, locale, locales } = useI18n()
+const localePath = useLocalePath()
+
+const year = new Date().getFullYear()
 const amount = ref<number>(1000)
-const stableAssets: StableAsset[] = ['USDT', 'USDC', 'DAI']
-const selectedAsset = ref<'ALL' | StableAsset>('ALL')
+const availableLocales = computed(() => locales.value)
+const threadsLink = socialLinks.find(link => link.id === 'threads') ?? {
+  id: 'threads',
+  label: 'Threads',
+  href: 'https://www.threads.com/@roman.korenchuk',
+  icon: 'simple-icons:threads' as const,
+}
+const stableAssets = computed<StableAsset[]>(() => {
+  return [...new Set(stableEarnOffers.map(offer => offer.asset))].sort()
+})
+const selectedAssets = ref<StableAsset[]>(
+  stableAssets.value.filter(asset => ['USDT', 'USDC', 'DAI'].includes(asset))
+)
 
 const activeExchanges = computed(() => {
   return [...stableEarnExchanges].filter(exchange => exchange.isActive)
@@ -196,22 +259,16 @@ const normalizedAmount = computed(() => {
 
 const hasValidAmount = computed(() => normalizedAmount.value > 0)
 
-const selectedAssetFilter = computed<StableAsset | undefined>(() => {
-  return selectedAsset.value === 'ALL' ? undefined : selectedAsset.value
-})
-
 const filteredOffers = computed(() => {
-  const selectedSet = new Set<ExchangeId>(selectedExchangeIds.value)
+  const selectedExchangeSet = new Set<ExchangeId>(selectedExchangeIds.value)
+  const selectedAssetSet = new Set<StableAsset>(selectedAssets.value)
 
   return stableEarnOffers.filter(offer => {
-    if (!selectedSet.has(offer.exchangeId)) {
+    if (!selectedExchangeSet.has(offer.exchangeId)) {
       return false
     }
 
-    if (
-      selectedAssetFilter.value &&
-      offer.asset !== selectedAssetFilter.value
-    ) {
+    if (!selectedAssetSet.has(offer.asset)) {
       return false
     }
 
@@ -223,7 +280,7 @@ const allocationResult = computed(() => {
   return allocateStableEarn({
     totalAmount: normalizedAmount.value,
     offers: stableEarnOffers,
-    asset: selectedAssetFilter.value,
+    assets: selectedAssets.value,
     allowedExchangeIds: selectedExchangeIds.value,
   })
 })
@@ -253,6 +310,18 @@ function formatCurrency(value: number): string {
 
 function formatPercent(value: number): string {
   return `${percentFormatter.value.format(value)}%`
+}
+
+function formatDate(value: string): string {
+  const date = new Date(value)
+
+  if (Number.isNaN(date.getTime())) {
+    return value
+  }
+
+  return new Intl.DateTimeFormat(locale.value === 'uk' ? 'uk-UA' : 'en-US', {
+    dateStyle: 'medium',
+  }).format(date)
 }
 
 const pageTitle = computed(() => t('pages.tools.stableEarn.title'))

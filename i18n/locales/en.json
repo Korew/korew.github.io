@@ -97,6 +97,7 @@
         "title": "Stable Earn Planner",
         "subtitle": "Estimate how to split stablecoins across exchanges and APR tiers for better projected returns.",
         "description": "Use this estimator to distribute your stablecoins across current CEX Earn offers. APR values are annual rates and estimates only.",
+        "languageSwitcher": "Language",
         "amount": "Amount (USD)",
         "asset": "Asset",
         "allAssets": "All assets",
@@ -115,6 +116,8 @@
         "unallocatedAmount": "{amount} remains unallocated because current filters and offer limits do not cover the full amount.",
         "notes": "Notes",
         "promo": "Promo",
+        "newUserOnly": "New users only",
+        "requiresAuth": "Requires account data",
         "flexible": "Flexible",
         "fixed": "Fixed",
         "fromAmount": "From",
@@ -129,7 +132,23 @@
         "offersHeaders": {
           "productType": "Product type",
           "tiers": "APR tiers",
-          "fetchedAt": "Fetched"
+          "status": "Status",
+          "source": "Source",
+          "fetchedAt": "Fetched",
+          "notes": "Notes",
+          "noNotes": "No restrictions"
+        },
+        "status": {
+          "available": "Available",
+          "sold_out": "Sold out",
+          "paused": "Paused",
+          "unavailable": "Unavailable",
+          "unknown": "Unknown"
+        },
+        "source": {
+          "manual": "Manual",
+          "api": "API",
+          "scrape": "Scrape"
         }
       }
     },
