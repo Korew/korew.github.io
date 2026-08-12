@@ -16,6 +16,7 @@ export interface AllocateStableEarnOptions {
   totalAmount: number
   offers: EarnOffer[]
   asset?: StableAsset
+  assets?: StableAsset[]
   allowedExchangeIds?: ExchangeId[]
 }
 
@@ -68,7 +69,7 @@ export function normalizeEarnRate(
 export function createStableEarnOffer(input: CreateEarnOfferInput): EarnOffer {
   const status = input.status ?? 'available'
   const minAmount = input.minAmount ?? 0
-  const tiers = createStableEarnTiers(input.tiers, minAmount, status)
+  const tiers = createStableEarnTiers(input.tiers, status)
   const lastTier = tiers.at(-1)
 
   return {
@@ -100,12 +101,13 @@ export function createStableEarnOffer(input: CreateEarnOfferInput): EarnOffer {
 export function flattenTierSegments(
   offers: EarnOffer[],
   asset?: StableAsset,
-  allowedExchangeIds?: ExchangeId[]
+  allowedExchangeIds?: ExchangeId[],
+  assets?: StableAsset[]
 ): FlatTierSegment[] {
-  const allowedSet =
-    allowedExchangeIds && allowedExchangeIds.length > 0
-      ? new Set<ExchangeId>(allowedExchangeIds)
-      : null
+  const allowedExchangeSet = allowedExchangeIds
+    ? new Set<ExchangeId>(allowedExchangeIds)
+    : null
+  const allowedAssetSet = createAllowedAssetSet(asset, assets)
 
   return offers
     .filter(offer => {
@@ -113,11 +115,11 @@ export function flattenTierSegments(
         return false
       }
 
-      if (asset && offer.asset !== asset) {
+      if (allowedAssetSet && !allowedAssetSet.has(offer.asset)) {
         return false
       }
 
-      if (allowedSet && !allowedSet.has(offer.exchangeId)) {
+      if (allowedExchangeSet && !allowedExchangeSet.has(offer.exchangeId)) {
         return false
       }
 
@@ -125,8 +127,16 @@ export function flattenTierSegments(
     })
     .flatMap(offer => {
       const segments: FlatTierSegment[] = []
+      let remainingOfferCapacity =
+        offer.remainingCapacity === null
+          ? INFINITE_CAPACITY
+          : offer.remainingCapacity
 
       for (const tier of offer.tiers) {
+        if (remainingOfferCapacity <= 0) {
+          break
+        }
+
         if (tier.status !== 'available') {
           continue
         }
@@ -142,15 +152,24 @@ export function flattenTierSegments(
             ? INFINITE_CAPACITY
             : Math.max(0, maxAmount - tier.minAmount)
         const capacity =
-          tier.remainingCapacity === null
-            ? rangeCapacity
-            : Math.min(rangeCapacity, tier.remainingCapacity)
+          Math.min(
+            rangeCapacity,
+            tier.remainingCapacity === null
+              ? INFINITE_CAPACITY
+              : tier.remainingCapacity,
+            remainingOfferCapacity
+          )
+
+        if (capacity <= 0) {
+          continue
+        }
 
         segments.push({
           offerId: offer.id,
           exchangeId: offer.exchangeId,
           asset: offer.asset,
           productType: offer.productType,
+          offerMinAmount: offer.minAmount,
           source: offer.source,
           sourceUrl: offer.sourceUrl,
           apr: tier.apr,
@@ -161,6 +180,13 @@ export function flattenTierSegments(
           status: tier.status,
           isPromo: offer.isPromo,
         })
+
+        if (Number.isFinite(remainingOfferCapacity)) {
+          remainingOfferCapacity = Math.max(
+            0,
+            remainingOfferCapacity - capacity
+          )
+        }
       }
 
       return segments
@@ -181,20 +207,31 @@ export function allocateStableEarn(
   const sortedSegments = flattenTierSegments(
     options.offers,
     options.asset,
-    options.allowedExchangeIds
+    options.allowedExchangeIds,
+    options.assets
   ).sort((a, b) => b.apr - a.apr)
 
   let remaining = safeAmount
   const segments: AllocationSegment[] = []
+  const allocatedByOffer = new Map<string, number>()
 
   for (const segment of sortedSegments) {
     if (remaining <= 0) {
       break
     }
 
+    const allocatedToOffer = allocatedByOffer.get(segment.offerId) ?? 0
     const allocatable = Math.min(remaining, segment.capacity)
 
     if (allocatable <= 0) {
+      continue
+    }
+
+    if (
+      allocatedToOffer === 0 &&
+      segment.offerMinAmount > 0 &&
+      allocatable < segment.offerMinAmount
+    ) {
       continue
     }
 
@@ -210,6 +247,7 @@ export function allocateStableEarn(
       estimatedDailyProfit: estimatedYearlyProfit / 365,
     })
 
+    allocatedByOffer.set(segment.offerId, allocatedToOffer + allocatable)
     remaining -= allocatable
   }
 
@@ -228,6 +266,8 @@ export function allocateStableEarn(
 
   return {
     totalAmount: safeAmount,
+    allocatedAmount: allocatedTotal,
+    unallocatedAmount: Math.max(0, safeAmount - allocatedTotal),
     weightedApr: (estimatedYearlyProfit / safeAmount) * 100,
     estimatedYearlyProfit,
     estimatedMonthlyProfit,
@@ -239,6 +279,8 @@ export function allocateStableEarn(
 function createEmptyResult(totalAmount: number): AllocationResult {
   return {
     totalAmount,
+    allocatedAmount: 0,
+    unallocatedAmount: totalAmount,
     weightedApr: 0,
     estimatedYearlyProfit: 0,
     estimatedMonthlyProfit: 0,
@@ -249,10 +291,9 @@ function createEmptyResult(totalAmount: number): AllocationResult {
 
 function createStableEarnTiers(
   tiers: CreateEarnOfferTierInput[],
-  offerMinAmount: number,
   offerStatus: EarnOffer['status']
 ): AprTier[] {
-  let currentMinAmount = offerMinAmount
+  let currentMinAmount = 0
 
   return tiers.map(tier => {
     const minAmount = tier.minAmount ?? currentMinAmount
@@ -330,4 +371,19 @@ function apyToApr(
     Math.pow(1 + annualRateDecimal, 1 / compoundingPeriodsPerYear) - 1
 
   return periodRate * compoundingPeriodsPerYear * 100
+}
+
+function createAllowedAssetSet(
+  asset?: StableAsset,
+  assets?: StableAsset[]
+): Set<StableAsset> | null {
+  if (assets) {
+    return new Set<StableAsset>(assets)
+  }
+
+  if (asset) {
+    return new Set<StableAsset>([asset])
+  }
+
+  return null
 }

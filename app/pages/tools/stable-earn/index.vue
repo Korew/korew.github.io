@@ -107,8 +107,19 @@
         {{ t('pages.tools.stableEarn.noResults') }}
       </p>
 
+      <p
+        v-else-if="allocationResult.unallocatedAmount > 0"
+        class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800"
+      >
+        {{
+          t('pages.tools.stableEarn.unallocatedAmount', {
+            amount: formatCurrency(allocationResult.unallocatedAmount),
+          })
+        }}
+      </p>
+
       <ToolsStableEarnAllocationTable
-        v-else
+        v-if="allocationResult.segments.length > 0"
         :exchanges="activeExchanges"
         :format-currency="formatCurrency"
         :format-percent="formatPercent"

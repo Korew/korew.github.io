@@ -122,6 +122,8 @@ export interface AllocationSegment {
 
 export interface AllocationResult {
   totalAmount: number
+  allocatedAmount: number
+  unallocatedAmount: number
   weightedApr: number
   estimatedYearlyProfit: number
   estimatedMonthlyProfit: number
@@ -134,6 +136,7 @@ export interface FlatTierSegment {
   exchangeId: ExchangeId
   asset: StableAsset
   productType: EarnProductType
+  offerMinAmount: number
   source: EarnOfferSource
   sourceUrl: string | null
   apr: number

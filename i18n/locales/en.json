@@ -112,6 +112,7 @@
         "openExchange": "Open exchange",
         "noResults": "No matching results for current filters.",
         "enterAmountHint": "Enter a valid amount greater than 0 to see allocation estimates.",
+        "unallocatedAmount": "{amount} remains unallocated because current filters and offer limits do not cover the full amount.",
         "notes": "Notes",
         "promo": "Promo",
         "flexible": "Flexible",
