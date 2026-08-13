@@ -30,7 +30,7 @@ export type StableAsset =
 
 export type EarnProductType = 'flexible' | 'fixed'
 
-export type EarnOfferSource = 'manual' | 'api' | 'scrape'
+export type EarnOfferSource = 'temporary_test_data' | 'api' | 'scrape'
 
 export type EarnOfferStatus =
   | 'available'
@@ -162,7 +162,7 @@ export interface CreateEarnOfferInput {
   exchangeId: ExchangeId
   asset: StableAsset
   productType: EarnProductType
-  source?: EarnOfferSource
+  source: EarnOfferSource
   sourceUrl?: string | null
   fetchedAt: string
   minAmount?: number

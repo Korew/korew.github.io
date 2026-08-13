@@ -11,6 +11,7 @@ function createOffer(input: Partial<CreateEarnOfferInput> = {}) {
     exchangeId: 'binance',
     asset: 'USDT',
     productType: 'flexible',
+    source: 'temporary_test_data',
     fetchedAt: '2026-03-12',
     tiers: [{ maxAmount: null, apr: 5 }],
     ...input,

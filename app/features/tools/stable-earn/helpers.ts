@@ -67,6 +67,10 @@ export function normalizeEarnRate(
 }
 
 export function createStableEarnOffer(input: CreateEarnOfferInput): EarnOffer {
+  if (!input.source) {
+    throw new Error('Earn offer source is required')
+  }
+
   const status = input.status ?? 'available'
   const minAmount = input.minAmount ?? 0
   const tiers = createStableEarnTiers(input.tiers, status)
@@ -77,7 +81,7 @@ export function createStableEarnOffer(input: CreateEarnOfferInput): EarnOffer {
     exchangeId: input.exchangeId,
     asset: input.asset,
     productType: input.productType,
-    source: input.source ?? 'manual',
+    source: input.source,
     sourceUrl: input.sourceUrl ?? null,
     fetchedAt: input.fetchedAt,
     minAmount,

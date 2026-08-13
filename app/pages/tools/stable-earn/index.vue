@@ -34,7 +34,7 @@
         <p
           class="inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-800"
         >
-          {{ t('pages.tools.stableEarn.manuallyUpdated') }}
+          {{ t('pages.tools.stableEarn.temporaryDataNotice') }}
         </p>
       </div>
     </header>

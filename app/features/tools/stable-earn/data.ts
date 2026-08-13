@@ -1,7 +1,14 @@
 import { createStableEarnOffer } from './helpers'
 import type { CreateEarnOfferInput, EarnOffer } from './types'
 
-const stableEarnOfferInputs: CreateEarnOfferInput[] = [
+// Temporary test dataset. Delete this static list after automated provider
+// ingestion/scraping becomes the source used by the tool.
+type TemporaryStableEarnOfferInput = Omit<
+  CreateEarnOfferInput,
+  'source' | 'sourceUrl'
+>
+
+const stableEarnOfferInputs: TemporaryStableEarnOfferInput[] = [
   /* === BINANCE === */
   {
     id: 'binance-usdt-flex',
@@ -352,6 +359,10 @@ const stableEarnOfferInputs: CreateEarnOfferInput[] = [
   },
 ]
 
-export const stableEarnOffers: EarnOffer[] = stableEarnOfferInputs.map(
-  createStableEarnOffer
+export const stableEarnOffers: EarnOffer[] = stableEarnOfferInputs.map(input =>
+  createStableEarnOffer({
+    ...input,
+    source: 'temporary_test_data',
+    sourceUrl: null,
+  })
 )

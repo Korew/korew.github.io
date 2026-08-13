@@ -1,4 +1,25 @@
-import type { ExchangeItem } from './types'
+import type { ExchangeItem, StableAsset } from './types'
+
+export const stableEarnAssetSymbols = [
+  'USDT',
+  'USDC',
+  'DAI',
+  'RLUSD',
+  'USD1',
+  'XUSD',
+  'FDUSD',
+  'TUSD',
+  'USTC',
+  'USDP',
+  'PYUSD',
+  'USDD',
+  'USDE',
+  'USDS',
+] as const satisfies StableAsset[]
+
+export function isStableEarnAsset(asset: string): asset is StableAsset {
+  return (stableEarnAssetSymbols as readonly string[]).includes(asset)
+}
 
 export const stableEarnExchanges: ExchangeItem[] = [
   {
