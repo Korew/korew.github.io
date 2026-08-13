@@ -5,7 +5,14 @@ export default withNuxt(
   {
     rules: {
       'no-console': 'error',
-      'max-len': ['error', { code: 100, tabWidth: 2 }],
+      'max-len': [
+        'error',
+        {
+          code: 100,
+          tabWidth: 2,
+          ignorePattern: '\\bclass="[^"]*"',
+        },
+      ],
       'comma-dangle': 'off',
       '@stylistic/comma-dangle': 'off',
       'vue/comma-dangle': 'off',

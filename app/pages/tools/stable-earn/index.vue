@@ -4,17 +4,12 @@
       <div class="space-y-3">
         <div class="flex items-start gap-3">
           <h1
-            class="
-                min-w-0 flex-1 text-2xl font-semibold text-slate-900 sm:text-4xl
-              "
+            class="min-w-0 flex-1 text-2xl font-semibold text-slate-900 sm:text-4xl"
           >
             {{ t('pages.tools.stableEarn.title') }}
           </h1>
           <nav
-            class="
-              mt-1 inline-flex w-fit shrink-0 items-center gap-1 rounded-lg
-              border border-slate-200 bg-white p-1 shadow-sm
-            "
+            class="inline-flex w-fit shrink-0 items-center gap-1 rounded-lg border border-slate-200 bg-white p-1 shadow-sm"
             :aria-label="t('pages.tools.stableEarn.languageSwitcher')"
           >
             <Icon
@@ -25,11 +20,7 @@
             <NuxtLink
               v-for="language in availableLocales"
               :key="language.code"
-              class="
-                inline-flex min-h-8 min-w-10 items-center justify-center
-                rounded-md px-2 text-sm font-semibold text-slate-500
-                hover:bg-slate-100 hover:text-slate-900
-              "
+              class="inline-flex min-h-8 min-w-10 items-center justify-center rounded-md px-2 text-sm font-semibold text-slate-500 hover:bg-slate-100 hover:text-slate-900"
               :class="{
                 'bg-slate-900 text-white hover:bg-slate-900 hover:text-white':
                   locale === language.code,
@@ -52,9 +43,7 @@
           </span>
           <span
             v-if="offerDataFetchedAtLabel"
-            class="
-              inline-flex rounded-full bg-slate-100 px-3 py-1 text-slate-600
-            "
+            class="inline-flex rounded-full bg-slate-100 px-3 py-1 text-slate-600"
           >
             {{ offerDataFetchedAtLabel }}
           </span>
@@ -63,10 +52,7 @@
     </header>
 
     <section
-      class="
-        grid gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm
-        lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)_minmax(0,1.6fr)]
-      "
+      class="grid gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)_minmax(0,1.6fr)]"
     >
       <label class="space-y-2">
         <span class="text-sm font-medium text-slate-700">
@@ -80,10 +66,7 @@
           {{ t('pages.tools.stableEarn.asset') }}
         </legend>
         <div
-          class="
-            grid max-h-48 grid-cols-2 gap-2 overflow-y-auto pr-1
-            sm:grid-cols-3 lg:grid-cols-2
-          "
+          class="grid max-h-48 grid-cols-2 gap-2 overflow-y-auto pr-1 sm:grid-cols-3 lg:grid-cols-2"
         >
           <UiCheckbox
             v-for="asset in stableAssets"
@@ -91,10 +74,7 @@
             v-model="selectedAssets"
             :label="asset"
             :value="asset"
-            class="
-              rounded-lg border border-slate-200 px-2 py-1.5 text-sm
-              text-slate-700
-            "
+            class="rounded-lg border border-slate-200 px-2 py-1.5 text-sm text-slate-700"
           />
         </div>
       </fieldset>
@@ -110,10 +90,7 @@
             v-model="selectedExchangeIds"
             :label="exchange.name"
             :value="exchange.id"
-            class="
-              rounded-lg border border-slate-200 px-2 py-1.5 text-sm
-              text-slate-700
-            "
+            class="rounded-lg border border-slate-200 px-2 py-1.5 text-sm text-slate-700"
           />
         </div>
       </fieldset>
@@ -159,50 +136,35 @@
 
       <p
         v-if="isLoadingOffers"
-        class="
-          rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4
-          py-6 text-center text-slate-600
-        "
+        class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-slate-600"
       >
         {{ t('pages.tools.stableEarn.loadingOffers') }}
       </p>
 
       <p
         v-else-if="offersError"
-        class="
-          rounded-xl border border-dashed border-rose-300 bg-rose-50 px-4 py-6
-          text-center text-rose-700
-        "
+        class="rounded-xl border border-dashed border-rose-300 bg-rose-50 px-4 py-6 text-center text-rose-700"
       >
         {{ t('pages.tools.stableEarn.offerDataUnavailable') }}
       </p>
 
       <p
         v-else-if="!hasValidAmount"
-        class="
-          rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4
-          py-6 text-center text-slate-600
-        "
+        class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-slate-600"
       >
         {{ t('pages.tools.stableEarn.enterAmountHint') }}
       </p>
 
       <p
         v-else-if="allocationResult.segments.length === 0"
-        class="
-          rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4
-          py-6 text-center text-slate-600
-        "
+        class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-slate-600"
       >
         {{ t('pages.tools.stableEarn.noResults') }}
       </p>
 
       <p
         v-else-if="allocationResult.unallocatedAmount > 0"
-        class="
-          rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm
-          text-amber-800
-        "
+        class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800"
       >
         {{
           t('pages.tools.stableEarn.unallocatedAmount', {
@@ -227,30 +189,21 @@
 
       <p
         v-if="offersError"
-        class="
-          rounded-xl border border-dashed border-rose-300 bg-rose-50 px-4 py-6
-          text-center text-rose-700
-        "
+        class="rounded-xl border border-dashed border-rose-300 bg-rose-50 px-4 py-6 text-center text-rose-700"
       >
         {{ t('pages.tools.stableEarn.offerDataUnavailable') }}
       </p>
 
       <p
         v-else-if="isLoadingOffers"
-        class="
-          rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4
-          py-6 text-center text-slate-600
-        "
+        class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-slate-600"
       >
         {{ t('pages.tools.stableEarn.loadingOffers') }}
       </p>
 
       <p
         v-else-if="filteredOffers.length === 0"
-        class="
-          rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4
-          py-6 text-center text-slate-600
-        "
+        class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center text-slate-600"
       >
         {{ t('pages.tools.stableEarn.noResults') }}
       </p>
@@ -266,10 +219,7 @@
     </section>
 
     <section
-      class="
-        rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm
-        text-slate-600
-      "
+      class="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600"
     >
       <h3 class="font-semibold text-slate-800">
         {{ t('pages.tools.stableEarn.disclaimerTitle') }}
@@ -280,18 +230,11 @@
     </section>
 
     <footer
-      class="
-        flex flex-col gap-3 border-t border-slate-200 py-6 text-sm
-        text-slate-500 sm:flex-row sm:items-center sm:justify-between
-      "
+      class="flex flex-col gap-3 border-t border-slate-200 py-6 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between"
     >
       <p>© {{ year }}. Roman Korenchuk</p>
       <a
-        class="
-          inline-flex w-fit items-center gap-2 rounded-md p-1 font-medium
-          text-slate-500 hover:text-slate-900 focus-visible:outline-none
-          focus-visible:ring-2 focus-visible:ring-slate-400
-        "
+        class="inline-flex w-fit items-center gap-2 rounded-md p-1 font-medium text-slate-500 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
         :aria-label="threadsLink.label"
         :href="threadsLink.href"
         rel="noopener noreferrer me"
