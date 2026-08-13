@@ -19,6 +19,20 @@
           </span>
         </NuxtLinkLocale>
       </li>
+
+      <li>
+        <NuxtLinkLocale class="tool-link" to="/tools/stable-earn">
+          <span class="tool-link__title">
+            {{ t('pages.tools.items.stableEarn.title') }}
+          </span>
+          <span class="tool-link__description">
+            {{ t('pages.tools.items.stableEarn.description') }}
+          </span>
+          <span class="tool-link__action">
+            {{ t('pages.tools.items.stableEarn.linkLabel') }}
+          </span>
+        </NuxtLinkLocale>
+      </li>
     </ul>
   </section>
 </template>

@@ -32,6 +32,12 @@ export type EarnProductType = 'flexible' | 'fixed'
 
 export type EarnOfferSource = 'temporary_test_data' | 'api' | 'scrape'
 
+export type StableEarnOffersDataSource =
+  | 'live'
+  | 'cache'
+  | 'stale_cache'
+  | 'temporary_test_data'
+
 export type EarnOfferStatus =
   | 'available'
   | 'sold_out'
@@ -108,6 +114,28 @@ export interface EarnOffer {
   regionNotes: string[]
   tiers: AprTier[]
   notes?: string
+}
+
+export interface StableEarnOffersCacheMeta {
+  hit: boolean
+  cachedAt: string | null
+  expiresAt: string | null
+  ttlMs: number
+}
+
+export interface StableEarnOffersResponseMeta {
+  count: number
+  providerIds: ExchangeId[]
+  assets: StableAsset[] | null
+  dataSource: StableEarnOffersDataSource
+  fetchedAt: string
+  cache: StableEarnOffersCacheMeta
+  fallbackReason?: string
+}
+
+export interface StableEarnOffersResponse {
+  offers: EarnOffer[]
+  meta: StableEarnOffersResponseMeta
 }
 
 export interface AllocationSegment {

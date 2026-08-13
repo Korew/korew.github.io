@@ -8,9 +8,29 @@
       >
         <div class="flex items-start justify-between gap-3">
           <div>
-            <p class="text-sm font-semibold text-slate-900">
-              {{ exchangeById[offer.exchangeId]?.name ?? offer.exchangeId }}
-            </p>
+            <a
+              v-if="getExchangeReferralUrl(offer.exchangeId)"
+              class="
+                inline-flex items-center gap-2 text-sm font-semibold
+                text-slate-900 hover:text-slate-600
+              "
+              :href="getExchangeReferralUrl(offer.exchangeId)"
+              rel="nofollow noopener noreferrer"
+              target="_blank"
+            >
+              <ExchangeIcon :exchange-id="offer.exchangeId" />
+              <span>{{ getExchangeName(offer.exchangeId) }}</span>
+            </a>
+            <span
+              v-else
+              class="
+                inline-flex items-center gap-2 text-sm font-semibold
+                text-slate-900
+              "
+            >
+              <ExchangeIcon :exchange-id="offer.exchangeId" />
+              <span>{{ getExchangeName(offer.exchangeId) }}</span>
+            </span>
             <p class="mt-1 text-xs text-slate-500">
               {{ offer.asset }} ·
               {{ t(`pages.tools.stableEarn.${offer.productType}`) }}
@@ -36,16 +56,7 @@
         <div class="mt-4 grid gap-2 text-xs text-slate-500">
           <p>
             {{ t('pages.tools.stableEarn.offersHeaders.source') }}:
-            <a
-              v-if="offer.sourceUrl"
-              class="font-medium text-slate-700 underline underline-offset-2"
-              :href="offer.sourceUrl"
-              rel="nofollow noopener noreferrer"
-              target="_blank"
-            >
-              {{ formatSource(offer.source) }}
-            </a>
-            <span v-else class="font-medium text-slate-700">
+            <span class="font-medium text-slate-700">
               {{ formatSource(offer.source) }}
             </span>
           </p>
@@ -55,27 +66,29 @@
               {{ formatDate(offer.fetchedAt) }}
             </span>
           </p>
-          <p>
-            {{ t('pages.tools.stableEarn.offersHeaders.notes') }}:
-            <span class="font-medium text-slate-700">
-              {{ formatOfferNotesLabel(offer) }}
-            </span>
-          </p>
+          <div
+            v-if="formatOfferNotes(offer).length > 0"
+            class="space-y-1"
+          >
+            <p>{{ t('pages.tools.stableEarn.offersHeaders.notes') }}:</p>
+            <ul class="font-medium text-slate-700">
+              <li
+                v-for="note in formatOfferNotes(offer)"
+                :key="`${offer.id}-${note}`"
+              >
+                {{ note }}
+              </li>
+            </ul>
+          </div>
         </div>
-
-        <a
-          class="mt-4 inline-flex w-full items-center justify-center rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
-          :href="exchangeById[offer.exchangeId]?.referralUrl"
-          rel="nofollow noopener noreferrer"
-          target="_blank"
-        >
-          {{ t('pages.tools.stableEarn.openExchange') }}
-        </a>
       </article>
     </div>
 
     <div
-      class="hidden overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm lg:block"
+      class="
+        hidden overflow-x-auto rounded-2xl border border-slate-200 bg-white
+        shadow-sm lg:block
+      "
     >
       <table class="min-w-full text-sm">
         <thead class="bg-slate-50 text-left text-slate-600">
@@ -101,12 +114,6 @@
             <th class="px-4 py-3 font-medium">
               {{ t('pages.tools.stableEarn.offersHeaders.fetchedAt') }}
             </th>
-            <th class="px-4 py-3 font-medium">
-              {{ t('pages.tools.stableEarn.offersHeaders.notes') }}
-            </th>
-            <th class="px-4 py-3 font-medium">
-              {{ t('pages.tools.stableEarn.referralLink') }}
-            </th>
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-100">
@@ -116,18 +123,33 @@
             class="align-top text-slate-800"
           >
             <td class="px-4 py-3 font-medium">
-              <div class="flex items-center gap-2">
-                <span>
-                  {{ exchangeById[offer.exchangeId]?.name ?? offer.exchangeId }}
-                </span>
-              </div>
+              <a
+                v-if="getExchangeReferralUrl(offer.exchangeId)"
+                class="
+                  inline-flex items-center gap-2 text-slate-900
+                  hover:text-slate-600
+                "
+                :href="getExchangeReferralUrl(offer.exchangeId)"
+                rel="nofollow noopener noreferrer"
+                target="_blank"
+              >
+                <ExchangeIcon :exchange-id="offer.exchangeId" />
+                <span>{{ getExchangeName(offer.exchangeId) }}</span>
+              </a>
+              <span v-else class="inline-flex items-center gap-2">
+                <ExchangeIcon :exchange-id="offer.exchangeId" />
+                <span>{{ getExchangeName(offer.exchangeId) }}</span>
+              </span>
             </td>
             <td class="px-4 py-3">
               {{ offer.asset }}
             </td>
             <td class="px-4 py-3">
               <span
-                class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700"
+                class="
+                  rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium
+                  text-slate-700
+                "
               >
                 {{ t(`pages.tools.stableEarn.${offer.productType}`) }}
               </span>
@@ -151,44 +173,10 @@
               </span>
             </td>
             <td class="px-4 py-3">
-              <a
-                v-if="offer.sourceUrl"
-                class="font-medium text-slate-700 underline underline-offset-2 hover:text-slate-900"
-                :href="offer.sourceUrl"
-                rel="nofollow noopener noreferrer"
-                target="_blank"
-              >
-                {{ formatSource(offer.source) }}
-              </a>
-              <span v-else>
-                {{ formatSource(offer.source) }}
-              </span>
+              {{ formatSource(offer.source) }}
             </td>
             <td class="px-4 py-3">
               {{ formatDate(offer.fetchedAt) }}
-            </td>
-            <td class="min-w-56 px-4 py-3 text-slate-600">
-              <span v-if="formatOfferNotes(offer).length === 0">
-                {{ t('pages.tools.stableEarn.offersHeaders.noNotes') }}
-              </span>
-              <ul v-else class="space-y-1">
-                <li
-                  v-for="note in formatOfferNotes(offer)"
-                  :key="`${offer.id}-${note}`"
-                >
-                  {{ note }}
-                </li>
-              </ul>
-            </td>
-            <td class="px-4 py-3">
-              <a
-                class="inline-flex items-center rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100"
-                :href="exchangeById[offer.exchangeId]?.referralUrl"
-                rel="nofollow noopener noreferrer"
-                target="_blank"
-              >
-                {{ t('pages.tools.stableEarn.openExchange') }}
-              </a>
             </td>
           </tr>
         </tbody>
@@ -198,6 +186,8 @@
 </template>
 
 <script setup lang="ts">
+import { defineComponent, h } from 'vue'
+import type { PropType } from 'vue'
 import type {
   AprTier,
   EarnOffer,
@@ -230,6 +220,79 @@ const exchangeById = computed<Record<ExchangeId, ExchangeItem | undefined>>(
     >
   }
 )
+
+const ExchangeIcon = defineComponent({
+  props: {
+    exchangeId: {
+      type: String as PropType<ExchangeId>,
+      required: true,
+    },
+  },
+  setup(componentProps) {
+    return () => {
+      const exchange = exchangeById.value[componentProps.exchangeId]
+      const imageSrc = getExchangeImageSrc(exchange)
+      const name = getExchangeName(componentProps.exchangeId)
+
+      if (imageSrc) {
+        return h('img', {
+          alt: '',
+          class:
+            'size-6 shrink-0 rounded-full bg-white object-contain ring-1 ' +
+            'ring-slate-200',
+          loading: 'lazy',
+          src: imageSrc,
+        })
+      }
+
+      return h(
+        'span',
+        {
+          'aria-hidden': 'true',
+          class:
+            'inline-flex size-6 shrink-0 items-center justify-center ' +
+            'rounded-full bg-slate-100 text-[10px] font-bold text-slate-700',
+        },
+        getExchangeFallbackIcon(exchange, name)
+      )
+    }
+  },
+})
+
+function getExchangeName(exchangeId: ExchangeId): string {
+  return exchangeById.value[exchangeId]?.name ?? exchangeId
+}
+
+function getExchangeReferralUrl(exchangeId: ExchangeId): string | undefined {
+  return exchangeById.value[exchangeId]?.referralUrl
+}
+
+function getExchangeImageSrc(exchange?: ExchangeItem): string {
+  return getImageSrc(exchange?.icon)
+}
+
+function getImageSrc(asset: ExchangeItem['icon'] | undefined): string {
+  if (typeof asset === 'string' && asset.startsWith('/')) {
+    return asset
+  }
+
+  if (typeof asset === 'object') {
+    return getImageSrc(asset.light)
+  }
+
+  return ''
+}
+
+function getExchangeFallbackIcon(
+  exchange: ExchangeItem | undefined,
+  name: string
+): string {
+  if (typeof exchange?.icon === 'string' && !exchange.icon.startsWith('/')) {
+    return exchange.icon
+  }
+
+  return name.slice(0, 2).toUpperCase()
+}
 
 function formatTier(tier: AprTier): string {
   const minLabel = props.formatCurrency(tier.minAmount)
@@ -273,16 +336,6 @@ function formatOfferNotes(offer: EarnOffer): string[] {
   }
 
   return notes
-}
-
-function formatOfferNotesLabel(offer: EarnOffer): string {
-  const notes = formatOfferNotes(offer)
-
-  if (notes.length === 0) {
-    return t('pages.tools.stableEarn.offersHeaders.noNotes')
-  }
-
-  return notes.join(', ')
 }
 
 function statusClass(status: EarnOfferStatus): string {

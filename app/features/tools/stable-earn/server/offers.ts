@@ -1,5 +1,11 @@
 import { stableEarnOffers as temporaryStableEarnOffers } from '../data'
-import type { EarnOffer, ExchangeId, StableAsset } from '../types'
+import type {
+  EarnOffer,
+  ExchangeId,
+  StableAsset,
+  StableEarnOffersDataSource,
+  StableEarnOffersResponse,
+} from '../types'
 import { bybitStableEarnProvider } from './providers/bybit'
 import type {
   FetchStableEarnProviderOptions,
@@ -10,11 +16,6 @@ export const stableEarnProviders = [bybitStableEarnProvider] as const
 export const STABLE_EARN_OFFERS_CACHE_TTL_MS = 15 * 60 * 1000
 
 export type StableEarnProviderId = (typeof stableEarnProviders)[number]['id']
-export type StableEarnOffersDataSource =
-  | 'live'
-  | 'cache'
-  | 'stale_cache'
-  | 'temporary_test_data'
 
 export interface FetchLiveStableEarnOffersOptions
   extends Pick<FetchStableEarnProviderOptions, 'assets' | 'fetch' | 'signal'> {
@@ -29,26 +30,6 @@ export interface FetchStableEarnOffersOptions
   forceRefresh?: boolean
   allowStaleCacheOnError?: boolean
   fallbackToTemporaryData?: boolean
-}
-
-export interface StableEarnOffersCacheMeta {
-  hit: boolean
-  cachedAt: string | null
-  expiresAt: string | null
-  ttlMs: number
-}
-
-export interface StableEarnOffersResult {
-  offers: EarnOffer[]
-  meta: {
-    count: number
-    providerIds: StableEarnProviderId[]
-    assets: StableAsset[] | null
-    dataSource: StableEarnOffersDataSource
-    fetchedAt: string
-    cache: StableEarnOffersCacheMeta
-    fallbackReason?: string
-  }
 }
 
 interface StableEarnOffersCacheEntry {
@@ -99,7 +80,7 @@ export async function fetchLiveStableEarnOffers(
 
 export async function fetchStableEarnOffers(
   options: FetchStableEarnOffersOptions = {}
-): Promise<StableEarnOffersResult> {
+): Promise<StableEarnOffersResponse> {
   const providerIds = normalizeProviderIds(options.providerIds)
   const nowMs = normalizeTimestamp(options.now)
   const cacheTtlMs = normalizeCacheTtlMs(options.cacheTtlMs)
@@ -185,7 +166,7 @@ function createStableEarnOffersResult(options: {
   dataSource: StableEarnOffersDataSource
   cacheEntry: StableEarnOffersCacheEntry | null
   fallbackReason?: string
-}): StableEarnOffersResult {
+}): StableEarnOffersResponse {
   const offers = filterOffersByAssets(options.allOffers, options.assets)
 
   return {

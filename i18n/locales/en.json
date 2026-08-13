@@ -37,6 +37,11 @@
           "title": "Invoice generator",
           "description": "Create printable invoices for cork compensators.",
           "linkLabel": "Open invoice generator"
+        },
+        "stableEarn": {
+          "title": "Stable Earn Planner",
+          "description": "Plan how to split stablecoins across CEX Earn offers.",
+          "linkLabel": "Open Stable Earn"
         }
       },
       "invoiceGenerator": {
@@ -107,7 +112,17 @@
         "estimatedYearlyIncome": "Estimated yearly income",
         "allocation": "Allocation",
         "currentOffers": "Current offers",
-        "temporaryDataNotice": "Temporary test data until automated ingestion is ready",
+        "loadingOffers": "Loading offers...",
+        "offerDataUnavailable": "Offer data is unavailable right now.",
+        "offerDataFetchedAt": "Updated {date}",
+        "dataStatus": {
+          "live": "Live API data",
+          "cache": "Cached API data",
+          "stale_cache": "Stale cached API data",
+          "temporary_test_data": "Temporary test data",
+          "loading": "Loading offer data",
+          "error": "Offer API unavailable"
+        },
         "referralLink": "Referral",
         "openExchange": "Open exchange",
         "noResults": "No matching results for current filters.",
@@ -122,7 +137,7 @@
         "fromAmount": "From",
         "aboveAmount": "and above",
         "disclaimerTitle": "Disclaimer",
-        "disclaimerText": "This tool currently uses temporary test APR data while automated provider ingestion is being prepared. It does not guarantee income, and actual rates can change at any time.",
+        "disclaimerText": "This tool uses provider API data when available, cached data during short outages, and temporary test data only as a fallback while automated ingestion is expanded. It does not guarantee income, and actual rates can change at any time.",
         "allocationHeaders": {
           "exchange": "Exchange",
           "amount": "Allocated amount",
@@ -134,8 +149,7 @@
           "status": "Status",
           "source": "Source",
           "fetchedAt": "Fetched",
-          "notes": "Notes",
-          "noNotes": "No restrictions"
+          "notes": "Notes"
         },
         "status": {
           "available": "Available",
