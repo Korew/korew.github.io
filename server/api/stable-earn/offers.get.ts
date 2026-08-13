@@ -1,34 +1,29 @@
+import { useRuntimeConfig } from '#imports'
 import { createError, defineEventHandler, getQuery } from 'h3'
 import {
-  defaultStableEarnProviderIds,
-  fetchLiveStableEarnOffers,
+  fetchStableEarnOffers,
   isStableEarnProviderId,
   type StableEarnProviderId,
-} from '../../../../app/features/tools/stable-earn/server/offers'
-import { isStableEarnAsset } from '../../../../app/features/tools/stable-earn/const'
-import type { StableAsset } from '../../../../app/features/tools/stable-earn/types'
+} from '../../../app/features/tools/stable-earn/server/offers'
+import { isStableEarnAsset } from '../../../app/features/tools/stable-earn/const'
+import type { StableAsset } from '../../../app/features/tools/stable-earn/types'
 
 export default defineEventHandler(async event => {
   const query = getQuery(event)
   const providerIds = parseProviderIds(query.providers ?? query.provider)
   const assets = parseAssets(query.assets ?? query.asset)
+  const runtimeConfig = useRuntimeConfig(event)
 
   try {
-    const offers = await fetchLiveStableEarnOffers({
+    return await fetchStableEarnOffers({
       providerIds,
       assets,
       signal: event.node.req.signal,
+      forceRefresh: parseBoolean(query.refresh),
+      cacheTtlMs: parseCacheTtlMs(
+        runtimeConfig.stableEarn.cacheTtlSeconds
+      ),
     })
-
-    return {
-      offers,
-      meta: {
-        count: offers.length,
-        providerIds,
-        assets: assets ?? null,
-        fetchedAt: new Date().toISOString(),
-      },
-    }
   } catch (error) {
     throw createError({
       statusCode: 502,
@@ -40,11 +35,11 @@ export default defineEventHandler(async event => {
   }
 })
 
-function parseProviderIds(value: unknown): StableEarnProviderId[] {
+function parseProviderIds(value: unknown): StableEarnProviderId[] | undefined {
   const providerIds = parseQueryList(value)
 
   if (providerIds.length === 0) {
-    return defaultStableEarnProviderIds
+    return undefined
   }
 
   const invalidProvider = providerIds.find(
@@ -91,4 +86,24 @@ function parseQueryList(value: unknown): string[] {
     .flatMap(item => String(item).split(','))
     .map(item => item.trim())
     .filter(Boolean)
+}
+
+function parseBoolean(value: unknown): boolean {
+  const [firstValue] = parseQueryList(value)
+
+  if (!firstValue) {
+    return false
+  }
+
+  return ['1', 'true', 'yes'].includes(firstValue.toLowerCase())
+}
+
+function parseCacheTtlMs(value: unknown): number | undefined {
+  const ttlSeconds = Number(value)
+
+  if (!Number.isFinite(ttlSeconds) || ttlSeconds <= 0) {
+    return undefined
+  }
+
+  return ttlSeconds * 1000
 }

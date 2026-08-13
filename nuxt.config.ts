@@ -6,6 +6,9 @@ const env = loadEnv(process.env.NODE_ENV || 'development', process.cwd(), '')
 const siteUrl = env.NUXT_PUBLIC_SITE_URL
 const enableA11y = env.NUXT_A11Y === 'true'
 const enableHints = env.NUXT_HINTS === 'true'
+const stableEarnCacheTtlSeconds = Number(
+  env.NUXT_STABLE_EARN_CACHE_TTL_SECONDS ?? 900
+)
 
 type DevAnalysisModule = string | [string, { enabled: boolean }]
 
@@ -61,6 +64,11 @@ export default defineNuxtConfig({
   css: ['./app/assets/css/main.css'],
 
   runtimeConfig: {
+    stableEarn: {
+      cacheTtlSeconds: Number.isFinite(stableEarnCacheTtlSeconds)
+        ? stableEarnCacheTtlSeconds
+        : 900,
+    },
     public: {
       siteUrl,
     },
