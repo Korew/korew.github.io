@@ -21,12 +21,17 @@ export type StableAsset =
   | 'XUSD'
   | 'FDUSD'
   | 'TUSD'
-  | 'USTC'
   | 'USDP'
   | 'PYUSD'
   | 'USDD'
   | 'USDE'
   | 'USDS'
+  | 'USDG'
+  | 'GHO'
+  | 'FRAX'
+  | 'CRVUSD'
+  | 'USDM'
+  | 'AUSD'
 
 export type EarnProductType = 'flexible' | 'fixed'
 

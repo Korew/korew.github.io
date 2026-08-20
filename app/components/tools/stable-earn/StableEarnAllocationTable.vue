@@ -1,5 +1,9 @@
 <template>
-  <section class="rounded-2xl border border-slate-200 bg-white shadow-sm">
+  <section
+    class="
+      overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm
+    "
+  >
     <div class="overflow-x-auto">
       <table class="min-w-full text-sm">
         <thead class="bg-slate-50 text-left text-slate-600">
@@ -19,9 +23,6 @@
             <th class="px-4 py-3 font-medium">
               {{ t('pages.tools.stableEarn.estimatedDailyIncome') }}
             </th>
-            <th class="px-4 py-3 font-medium">
-              {{ t('pages.tools.stableEarn.referralLink') }}
-            </th>
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-100">
@@ -31,7 +32,10 @@
             class="text-slate-800"
           >
             <td class="px-4 py-3 font-medium">
-              {{ exchangeById[segment.exchangeId]?.name ?? segment.exchangeId }}
+              <ToolsStableEarnExchangeLink
+                :exchange-id="segment.exchangeId"
+                :exchanges="exchanges"
+              />
             </td>
             <td class="px-4 py-3">
               {{ segment.asset }}
@@ -45,16 +49,6 @@
             <td class="px-4 py-3">
               {{ formatCurrency(segment.estimatedDailyProfit) }}
             </td>
-            <td class="px-4 py-3">
-              <a
-                class="inline-flex items-center rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100"
-                :href="exchangeById[segment.exchangeId]?.referralUrl"
-                rel="nofollow noopener noreferrer"
-                target="_blank"
-              >
-                {{ t('pages.tools.stableEarn.openExchange') }}
-              </a>
-            </td>
           </tr>
         </tbody>
       </table>
@@ -65,7 +59,6 @@
 <script setup lang="ts">
 import type {
   AllocationSegment,
-  ExchangeId,
   ExchangeItem,
 } from '../../../features/tools/stable-earn/types'
 
@@ -76,19 +69,6 @@ interface Props {
   formatPercent: (value: number) => string
 }
 
-const props = defineProps<Props>()
+defineProps<Props>()
 const { t } = useI18n()
-
-const exchangeById = computed<Record<ExchangeId, ExchangeItem | undefined>>(
-  () => {
-    const entries = props.exchanges.map(
-      exchange => [exchange.id, exchange] as const
-    )
-
-    return Object.fromEntries(entries) as Record<
-      ExchangeId,
-      ExchangeItem | undefined
-    >
-  }
-)
 </script>

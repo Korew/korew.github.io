@@ -16,12 +16,14 @@ describe('stable earn offers cache', () => {
     const fetcher = vi.fn(async () => createBybitResponse())
 
     const firstResult = await fetchStableEarnOffers({
+      providerIds: ['bybit'],
       assets: ['USDT'],
       fetch: fetcher,
       now,
       cacheTtlMs: 60_000,
     })
     const secondResult = await fetchStableEarnOffers({
+      providerIds: ['bybit'],
       assets: ['USDT'],
       fetch: fetcher,
       now: '2026-08-13T10:00:30.000Z',
@@ -42,12 +44,14 @@ describe('stable earn offers cache', () => {
       .mockResolvedValueOnce(new Response('', { status: 503 }))
 
     await fetchStableEarnOffers({
+      providerIds: ['bybit'],
       assets: ['USDT'],
       fetch: fetcher,
       now,
       cacheTtlMs: 1,
     })
     const staleResult = await fetchStableEarnOffers({
+      providerIds: ['bybit'],
       assets: ['USDT'],
       fetch: fetcher,
       now: '2026-08-13T10:00:01.000Z',

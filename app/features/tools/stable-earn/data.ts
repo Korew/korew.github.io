@@ -73,14 +73,6 @@ const stableEarnOfferInputs: TemporaryStableEarnOfferInput[] = [
     fetchedAt: '2026-03-12',
   },
   {
-    id: 'binance-ustc-flex',
-    exchangeId: 'binance',
-    asset: 'USTC',
-    productType: 'flexible',
-    tiers: [{ maxAmount: null, apr: 1.02 }],
-    fetchedAt: '2026-03-12',
-  },
-  {
     id: 'binance-usdp-flex',
     exchangeId: 'binance',
     asset: 'USDP',

@@ -7,12 +7,16 @@ import type {
   StableEarnOffersResponse,
 } from '../types'
 import { bybitStableEarnProvider } from './providers/bybit'
+import { okxStableEarnProvider } from './providers/okx'
 import type {
   FetchStableEarnProviderOptions,
   StableEarnProvider,
 } from './providers/types'
 
-export const stableEarnProviders = [bybitStableEarnProvider] as const
+export const stableEarnProviders = [
+  bybitStableEarnProvider,
+  okxStableEarnProvider,
+] as const
 export const STABLE_EARN_OFFERS_CACHE_TTL_MS = 15 * 60 * 1000
 
 export type StableEarnProviderId = (typeof stableEarnProviders)[number]['id']
@@ -43,7 +47,10 @@ const stableEarnProviderById = new Map<ExchangeId, StableEarnProvider>(
 )
 const stableEarnOffersCache = new Map<string, StableEarnOffersCacheEntry>()
 
-export const defaultStableEarnProviderIds: StableEarnProviderId[] = ['bybit']
+export const defaultStableEarnProviderIds: StableEarnProviderId[] = [
+  'bybit',
+  'okx',
+]
 
 export function isStableEarnProviderId(
   providerId: string
@@ -65,7 +72,7 @@ export async function fetchLiveStableEarnOffers(
     return provider
   })
 
-  const providerOfferLists = await Promise.all(
+  const providerResults = await Promise.allSettled(
     providers.map(provider =>
       provider.fetchOffers({
         assets: options.assets,
@@ -74,8 +81,25 @@ export async function fetchLiveStableEarnOffers(
       })
     )
   )
+  const fulfilledResults = providerResults.filter(isFulfilledProviderResult)
 
-  return providerOfferLists.flat()
+  if (fulfilledResults.length === 0) {
+    const providerErrors = providerResults.map(result => {
+      return result.status === 'rejected'
+        ? getErrorMessage(result.reason)
+        : 'No offers returned'
+    })
+
+    throw new Error(`Stable Earn providers failed: ${providerErrors.join('; ')}`)
+  }
+
+  return fulfilledResults.flatMap(result => result.value)
+}
+
+function isFulfilledProviderResult(
+  result: PromiseSettledResult<EarnOffer[]>
+): result is PromiseFulfilledResult<EarnOffer[]> {
+  return result.status === 'fulfilled'
 }
 
 export async function fetchStableEarnOffers(
