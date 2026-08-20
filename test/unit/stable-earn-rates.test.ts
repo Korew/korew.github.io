@@ -58,18 +58,18 @@ describe('stable earn rate normalization', () => {
     ).toThrow('APY normalization requires compoundingPeriodsPerYear')
   })
 
-  it('creates complete temporary test offer records from compact input', () => {
+  it('creates complete offer records from compact provider input', () => {
     const offer = createStableEarnOffer({
       id: 'example-usdt-flex',
       exchangeId: 'binance',
       asset: 'USDT',
       productType: 'flexible',
-      source: 'temporary_test_data',
+      source: 'api',
       fetchedAt: '2026-03-12',
       tiers: [{ maxAmount: 200, apr: 3.84 }],
     })
 
-    expect(offer.source).toBe('temporary_test_data')
+    expect(offer.source).toBe('api')
     expect(offer.fetchedAt).toBe('2026-03-12')
     expect(offer.status).toBe('available')
     expect(offer.isFlexible).toBe(true)

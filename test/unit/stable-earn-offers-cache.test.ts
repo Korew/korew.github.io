@@ -65,23 +65,15 @@ describe('stable earn offers cache', () => {
     expect(staleResult.offers[0]?.source).toBe('api')
   })
 
-  it('falls back to temporary test data when provider fetch fails', async () => {
-    const result = await fetchStableEarnOffers({
-      providerIds: ['bybit'],
-      assets: ['USDT'],
-      fetch: async () => new Response('', { status: 503 }),
-      now,
-    })
-
-    expect(result.meta.dataSource).toBe('temporary_test_data')
-    expect(result.meta.cache.hit).toBe(false)
-    expect(result.meta.fallbackReason).toContain('503')
-    expect(result.offers).toHaveLength(1)
-    expect(result.offers[0]).toMatchObject({
-      exchangeId: 'bybit',
-      asset: 'USDT',
-      source: 'temporary_test_data',
-    })
+  it('fails visibly when provider fetch fails without cached offers', async () => {
+    await expect(
+      fetchStableEarnOffers({
+        providerIds: ['bybit'],
+        assets: ['USDT'],
+        fetch: async () => new Response('', { status: 503 }),
+        now,
+      })
+    ).rejects.toThrow('503')
   })
 })
 

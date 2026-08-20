@@ -35,13 +35,12 @@ export type StableAsset =
 
 export type EarnProductType = 'flexible' | 'fixed'
 
-export type EarnOfferSource = 'temporary_test_data' | 'api' | 'scrape'
+export type EarnOfferSource = 'api' | 'scrape'
 
 export type StableEarnOffersDataSource =
   | 'live'
   | 'cache'
   | 'stale_cache'
-  | 'temporary_test_data'
 
 export type EarnOfferStatus =
   | 'available'

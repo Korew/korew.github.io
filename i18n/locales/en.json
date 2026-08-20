@@ -119,7 +119,6 @@
           "live": "Live API data",
           "cache": "Cached API data",
           "stale_cache": "Stale cached API data",
-          "temporary_test_data": "Temporary test data",
           "loading": "Loading offer data",
           "error": "Offer API unavailable"
         },
@@ -137,7 +136,7 @@
         "fromAmount": "From",
         "aboveAmount": "and above",
         "disclaimerTitle": "Disclaimer",
-        "disclaimerText": "This tool uses provider API data when available, cached data during short outages, and temporary test data only as a fallback while automated ingestion is expanded. It does not guarantee income, and actual rates can change at any time.",
+        "disclaimerText": "This tool uses provider API and scraped public data when available, plus cached data during short outages. It does not guarantee income, and actual rates can change at any time.",
         "allocationHeaders": {
           "exchange": "Exchange",
           "amount": "Allocated amount",
@@ -159,7 +158,6 @@
           "unknown": "Unknown"
         },
         "source": {
-          "temporary_test_data": "Temporary test data",
           "api": "API",
           "scrape": "Scrape"
         }

@@ -482,9 +482,7 @@ const offerDataSource = computed<
     return 'loading'
   }
 
-  return (
-    stableEarnOffersResponse.value?.meta.dataSource ?? 'temporary_test_data'
-  )
+  return stableEarnOffersResponse.value?.meta.dataSource ?? 'loading'
 })
 
 const offerDataStatusLabel = computed(() => {
@@ -500,10 +498,7 @@ const offerDataStatusClass = computed(() => {
     return 'bg-sky-100 text-sky-800'
   }
 
-  if (
-    offerDataSource.value === 'stale_cache' ||
-    offerDataSource.value === 'temporary_test_data'
-  ) {
+  if (offerDataSource.value === 'stale_cache') {
     return 'bg-amber-100 text-amber-800'
   }
 

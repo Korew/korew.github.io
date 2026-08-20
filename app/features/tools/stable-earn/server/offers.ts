@@ -1,7 +1,5 @@
-import { stableEarnOffers as temporaryStableEarnOffers } from '../data'
 import type {
   EarnOffer,
-  ExchangeId,
   StableAsset,
   StableEarnOffersDataSource,
   StableEarnOffersResponse,
@@ -33,7 +31,6 @@ export interface FetchStableEarnOffersOptions
   cacheTtlMs?: number
   forceRefresh?: boolean
   allowStaleCacheOnError?: boolean
-  fallbackToTemporaryData?: boolean
 }
 
 interface StableEarnOffersCacheEntry {
@@ -160,19 +157,6 @@ export async function fetchStableEarnOffers(
       })
     }
 
-    if (options.fallbackToTemporaryData !== false) {
-      return createStableEarnOffersResult({
-        allOffers: filterTemporaryOffersByProvider(providerIds),
-        assets: options.assets,
-        providerIds,
-        nowMs,
-        cacheTtlMs,
-        dataSource: 'temporary_test_data',
-        cacheEntry: null,
-        fallbackReason,
-      })
-    }
-
     throw error
   }
 }
@@ -239,16 +223,6 @@ function filterOffersByAssets(
   const assetSet = new Set<StableAsset>(assets)
 
   return offers.filter(offer => assetSet.has(offer.asset))
-}
-
-function filterTemporaryOffersByProvider(
-  providerIds: StableEarnProviderId[]
-): EarnOffer[] {
-  const providerIdSet = new Set<ExchangeId>(providerIds)
-
-  return temporaryStableEarnOffers.filter(offer =>
-    providerIdSet.has(offer.exchangeId)
-  )
 }
 
 function createCacheEntry(
