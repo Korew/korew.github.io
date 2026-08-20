@@ -4,36 +4,44 @@ definePageMeta({
 })
 
 const DEFAULTS = {
-  topColor: '#245f73',
-  bottomColor: '#6f3d8f',
   pageColor: '#f5f7f8',
-  themeColor: '#245f73',
-  metaFollowsTop: 'yes',
+  bottomColor: '#33424f',
+  themeMode: 'off',
+  themeColor: '#f5f7f8',
+  headerOneColor: '#245f73',
+  headerTwoColor: '#87522f',
+  headerThreeColor: '#4f7234',
+  headerFourColor: '#7a3f68',
+  headerFiveColor: '#28384f',
 } as const
 
 type SettingKey = keyof typeof DEFAULTS
-type Preset = {
+type HeaderColorKey =
+  | 'headerOneColor'
+  | 'headerTwoColor'
+  | 'headerThreeColor'
+  | 'headerFourColor'
+  | 'headerFiveColor'
+
+type StickyHeader = {
   label: string
-  top: string
-  bottom: string
-  page: string
+  colorKey: HeaderColorKey
 }
 
 const route = useRoute()
 const router = useRouter()
 
 const HEX_COLOR_PATTERN = /^#[0-9a-fA-F]{6}$/
-const TOP_BAR_FALLBACK_HEIGHT = 176
 const BOTTOM_BAR_FALLBACK_HEIGHT = 168
 const isClient = import.meta.client
+const themeModeOptions = ['off', 'manual']
 
-const presets: Preset[] = [
-  { label: 'Dark', top: '#17202a', bottom: '#2d3642', page: '#f4f6f8' },
-  { label: 'Light', top: '#e8eee9', bottom: '#c7d6cc', page: '#ffffff' },
-  { label: 'Medium', top: '#2f6f73', bottom: '#82639a', page: '#f7f3ef' },
-  { label: 'Warm', top: '#874f2a', bottom: '#c27845', page: '#fff6ed' },
-  { label: 'Cool', top: '#1d4f7a', bottom: '#287271', page: '#eef7f8' },
-  { label: 'High', top: '#050505', bottom: '#f2c14e', page: '#ffffff' },
+const stickyHeaders: StickyHeader[] = [
+  { label: 'Header 1', colorKey: 'headerOneColor' },
+  { label: 'Header 2', colorKey: 'headerTwoColor' },
+  { label: 'Header 3', colorKey: 'headerThreeColor' },
+  { label: 'Header 4', colorKey: 'headerFourColor' },
+  { label: 'Header 5', colorKey: 'headerFiveColor' },
 ]
 
 const readQuerySetting = (key: SettingKey) => {
@@ -49,9 +57,7 @@ const settings = reactive(
   ) as Record<SettingKey, string>,
 )
 
-const topBarRef = ref<HTMLElement | null>(null)
 const bottomBarRef = ref<HTMLElement | null>(null)
-const topBarHeight = ref(TOP_BAR_FALLBACK_HEIGHT)
 const bottomBarHeight = ref(BOTTOM_BAR_FALLBACK_HEIGHT)
 const copyState = ref('')
 
@@ -77,11 +83,13 @@ const randomHex = () => {
     .padStart(6, '0')}`
 }
 
-const activeThemeColor = computed(() => {
-  if (settings.metaFollowsTop === 'yes') {
-    return safeColor(settings.topColor, DEFAULTS.topColor)
-  }
+const activeThemeMode = computed(() => {
+  return themeModeOptions.includes(settings.themeMode)
+    ? settings.themeMode
+    : DEFAULTS.themeMode
+})
 
+const activeThemeColor = computed(() => {
   return safeColor(settings.themeColor, DEFAULTS.themeColor)
 })
 
@@ -112,19 +120,14 @@ const directUrl = computed(() => {
 })
 
 const pageStyle = computed<Record<string, string>>(() => {
-  const top = safeColor(settings.topColor, DEFAULTS.topColor)
   const bottom = safeColor(settings.bottomColor, DEFAULTS.bottomColor)
   const page = safeColor(settings.pageColor, DEFAULTS.pageColor)
 
   return {
-    '--probe-top': top,
-    '--probe-top-text': contrastText(top),
     '--probe-bottom': bottom,
     '--probe-bottom-text': contrastText(bottom),
     '--probe-page': page,
     '--probe-page-text': contrastText(page),
-    '--probe-theme': activeThemeColor.value,
-    '--probe-top-height': `${topBarHeight.value}px`,
     '--probe-bottom-height': `${bottomBarHeight.value}px`,
   }
 })
@@ -150,18 +153,8 @@ body {
 `
 })
 
-useHead(() => ({
-  title: 'Browser Edge Color Probe',
-  htmlAttrs: {
-    style: [
-      `background:${safeColor(settings.pageColor, DEFAULTS.pageColor)}`,
-      'color-scheme:light dark',
-    ].join(';'),
-  },
-  bodyAttrs: {
-    class: 'edge-color-probe-body',
-  },
-  meta: [
+useHead(() => {
+  const meta = [
     {
       key: 'viewport',
       name: 'viewport',
@@ -172,60 +165,55 @@ useHead(() => ({
       name: 'color-scheme',
       content: 'light dark',
     },
-    {
+  ]
+
+  if (activeThemeMode.value === 'manual') {
+    meta.push({
       key: 'theme-color',
       name: 'theme-color',
       content: activeThemeColor.value,
+    })
+  }
+
+  return {
+    title: 'Browser Edge Color Probe',
+    htmlAttrs: {
+      style: [
+        `background:${safeColor(settings.pageColor, DEFAULTS.pageColor)}`,
+        'color-scheme:light dark',
+      ].join(';'),
     },
-  ],
-  style: [
-    {
-      key: 'edge-color-probe-root',
-      innerHTML: rootCss.value,
+    bodyAttrs: {
+      class: 'edge-color-probe-body',
     },
-  ],
-}))
+    meta,
+    style: [
+      {
+        key: 'edge-color-probe-root',
+        innerHTML: rootCss.value,
+      },
+    ],
+  }
+})
 
 const measureBars = () => {
   if (!isClient) return
 
-  topBarHeight.value = Math.ceil(
-    topBarRef.value?.offsetHeight ?? TOP_BAR_FALLBACK_HEIGHT,
-  )
   bottomBarHeight.value = Math.ceil(
     bottomBarRef.value?.offsetHeight ?? BOTTOM_BAR_FALLBACK_HEIGHT,
   )
 }
 
-const applyPreset = (preset: Preset) => {
-  settings.topColor = preset.top
-  settings.bottomColor = preset.bottom
-  settings.pageColor = preset.page
-  settings.themeColor = preset.top
-  settings.metaFollowsTop = 'yes'
-
-  void nextTick(measureBars)
-}
-
-const swapEdgeColors = () => {
-  const top = settings.topColor
-
-  settings.topColor = settings.bottomColor
-  settings.bottomColor = top
-
-  if (settings.metaFollowsTop === 'yes') {
-    settings.themeColor = settings.topColor
-  }
-
-  void nextTick(measureBars)
-}
-
 const randomizeColors = () => {
-  settings.topColor = randomHex()
+  settings.headerOneColor = randomHex()
+  settings.headerTwoColor = randomHex()
+  settings.headerThreeColor = randomHex()
+  settings.headerFourColor = randomHex()
+  settings.headerFiveColor = randomHex()
   settings.bottomColor = randomHex()
   settings.pageColor = randomHex()
-  settings.themeColor = settings.topColor
-  settings.metaFollowsTop = 'yes'
+  settings.themeColor = randomHex()
+  settings.themeMode = 'off'
 
   void nextTick(measureBars)
 }
@@ -295,79 +283,46 @@ onBeforeUnmount(() => {
     class="edge-probe"
     :style="pageStyle"
   >
-    <header
-      ref="topBarRef"
-      class="top-edge"
+    <section
+      class="sticky-stack"
+      aria-label="Sticky header color test"
     >
-      <div class="top-edge__main">
-        <div>
-          <p>Browser Edge Probe</p>
-          <h1>Fixed Header</h1>
-        </div>
-
-        <label class="color-field color-field--top">
-          <span>Top</span>
-          <input
-            v-model="settings.topColor"
-            type="color"
-          >
-          <code>{{ settings.topColor }}</code>
-        </label>
-      </div>
-
-      <div class="preset-row">
-        <button
-          v-for="preset in presets"
-          :key="preset.label"
-          class="preset-button"
-          type="button"
-          @click="applyPreset(preset)"
+      <article
+        v-for="(section, sectionIndex) in stickyHeaders"
+        :key="section.colorKey"
+        class="sticky-panel"
+      >
+        <header
+          class="test-header"
+          :style="{
+            background: safeColor(settings[section.colorKey], DEFAULTS[section.colorKey]),
+            color: contrastText(settings[section.colorKey]),
+          }"
         >
+          <div class="test-header__copy">
+            <p>Browser Edge Probe</p>
+            <h1>{{ section.label }}</h1>
+          </div>
+
+          <label class="color-field color-field--header">
+            <span>Color</span>
+            <input
+              v-model="settings[section.colorKey]"
+              type="color"
+            >
+            <code>{{ settings[section.colorKey] }}</code>
+          </label>
+        </header>
+
+        <div class="scroll-rows">
           <span
-            class="preset-swatch"
-            :style="{
-              '--swatch-top': preset.top,
-              '--swatch-bottom': preset.bottom,
-              '--swatch-page': preset.page,
-            }"
-          />
-          <span>{{ preset.label }}</span>
-        </button>
-      </div>
-    </header>
-
-    <section class="probe-content">
-      <div class="readout">
-        <div>
-          <span>Header</span>
-          <code>{{ settings.topColor }}</code>
+            v-for="rowIndex in 8"
+            :key="rowIndex"
+          >
+            section {{ sectionIndex + 1 }} / row {{ rowIndex }}
+          </span>
         </div>
-        <div>
-          <span>Bottom</span>
-          <code>{{ settings.bottomColor }}</code>
-        </div>
-        <div>
-          <span>Page</span>
-          <code>{{ settings.pageColor }}</code>
-        </div>
-        <div>
-          <span>theme-color</span>
-          <code>{{ activeThemeColor }}</code>
-        </div>
-      </div>
-
-      <p class="hint">
-        Change colors, scroll, then watch the iOS browser/status areas.
-      </p>
-
-      <div class="scroll-rows">
-        <span
-          v-for="index in 18"
-          :key="index"
-        >
-          scroll test {{ index }}
-        </span>
-      </div>
+      </article>
     </section>
 
     <nav
@@ -395,31 +350,29 @@ onBeforeUnmount(() => {
 
       <label class="color-field">
         <span>Meta</span>
+        <select v-model="settings.themeMode">
+          <option
+            v-for="mode in themeModeOptions"
+            :key="mode"
+            :value="mode"
+          >
+            {{ mode === 'off' ? 'Off' : 'Manual' }}
+          </option>
+        </select>
+        <code>{{ activeThemeMode }}</code>
+      </label>
+
+      <label class="color-field">
+        <span>Meta color</span>
         <input
           v-model="settings.themeColor"
           type="color"
-          :disabled="settings.metaFollowsTop === 'yes'"
+          :disabled="activeThemeMode === 'off'"
         >
         <code>{{ activeThemeColor }}</code>
       </label>
 
-      <label class="toggle-field">
-        <input
-          v-model="settings.metaFollowsTop"
-          type="checkbox"
-          true-value="yes"
-          false-value="no"
-        >
-        <span>Meta follows top</span>
-      </label>
-
       <div class="button-row">
-        <button
-          type="button"
-          @click="swapEdgeColors"
-        >
-          Swap
-        </button>
         <button
           type="button"
           @click="randomizeColors"
@@ -454,20 +407,15 @@ onBeforeUnmount(() => {
 <style scoped>
 .edge-probe {
   box-sizing: border-box;
-  min-height: 220dvh;
-  background:
-    linear-gradient(
-      180deg,
-      var(--probe-page),
-      color-mix(in srgb, var(--probe-page) 82%, var(--probe-bottom))
-    );
+  min-height: 500dvh;
+  background: var(--probe-page);
   color: var(--probe-page-text);
   padding:
-    calc(var(--probe-top-height, 176px) + 18px)
+    0
     max(16px, env(safe-area-inset-right))
     calc(var(--probe-bottom-height, 168px) + 18px)
     max(16px, env(safe-area-inset-left));
-  -webkit-tap-highlight-color: color-mix(in srgb, var(--probe-top) 28%, transparent);
+  -webkit-tap-highlight-color: color-mix(in srgb, var(--probe-bottom) 28%, transparent);
 }
 
 .edge-probe,
@@ -475,36 +423,87 @@ onBeforeUnmount(() => {
   box-sizing: border-box;
 }
 
-.top-edge,
-.bottom-edge {
-  position: fixed;
-  left: 0;
-  width: 100%;
-  border-color: color-mix(in srgb, currentColor 22%, transparent);
+.sticky-stack {
+  max-width: 760px;
+  margin: 0 auto;
 }
 
-.top-edge {
-  z-index: 30;
+.sticky-panel {
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  min-height: calc(100dvh + 180px);
+}
+
+.test-header {
+  position: sticky;
+  z-index: 24;
   top: 0;
-  border-bottom: 1px solid;
-  background: var(--probe-top);
-  color: var(--probe-top-text);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100vw;
+  min-height: 116px;
+  margin-right: calc(50% - 50vw);
+  margin-left: calc(50% - 50vw);
+  border-bottom: 1px solid color-mix(in srgb, currentColor 22%, transparent);
   padding:
     max(12px, env(safe-area-inset-top))
     max(12px, env(safe-area-inset-right))
-    12px
+    14px
     max(12px, env(safe-area-inset-left));
   box-shadow: 0 10px 28px color-mix(in srgb, #000 18%, transparent);
 }
 
-.bottom-edge {
-  z-index: 32;
-  bottom: 0;
+.test-header__copy {
+  min-width: 0;
+}
+
+.test-header p,
+.test-header h1 {
+  margin: 0;
+}
+
+.test-header p,
+.color-field span {
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.test-header h1 {
+  font-size: 2.6rem;
+  line-height: 0.95;
+}
+
+.scroll-rows {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  padding: 10px 0 26px;
+}
+
+.scroll-rows span {
+  display: block;
+  border: 1px solid color-mix(in srgb, var(--probe-page-text) 18%, transparent);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--probe-page) 78%, transparent);
+  padding: 18px;
+  font-weight: 800;
+}
+
+.bottom-edge {
+  position: fixed;
+  z-index: 32;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
   gap: 10px;
   align-items: end;
-  border-top: 1px solid;
+  border-top: 1px solid color-mix(in srgb, currentColor 22%, transparent);
   background: var(--probe-bottom);
   color: var(--probe-bottom-text);
   padding:
@@ -515,74 +514,6 @@ onBeforeUnmount(() => {
   box-shadow: 0 -12px 32px color-mix(in srgb, #000 22%, transparent);
 }
 
-.top-edge__main {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-}
-
-.top-edge p,
-h1,
-.hint {
-  margin: 0;
-}
-
-.top-edge p,
-.color-field span,
-.toggle-field,
-.readout span {
-  font-size: 0.76rem;
-  font-weight: 800;
-  letter-spacing: 0;
-  text-transform: uppercase;
-}
-
-h1 {
-  font-size: clamp(1.8rem, 8vw, 3.75rem);
-  line-height: 0.92;
-}
-
-.preset-row,
-.button-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.preset-row {
-  margin-top: 12px;
-}
-
-button {
-  min-height: 38px;
-  border: 1px solid color-mix(in srgb, currentColor 28%, transparent);
-  border-radius: 8px;
-  background: color-mix(in srgb, currentColor 10%, transparent);
-  color: inherit;
-  font: inherit;
-  font-size: 0.86rem;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-.preset-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 0 10px;
-}
-
-.preset-swatch {
-  width: 22px;
-  height: 22px;
-  border: 1px solid color-mix(in srgb, currentColor 28%, transparent);
-  border-radius: 50%;
-  background:
-    linear-gradient(135deg, var(--swatch-top) 0 49%, transparent 50%),
-    linear-gradient(315deg, var(--swatch-bottom) 0 49%, var(--swatch-page) 50%);
-}
-
 .color-field {
   display: grid;
   grid-template-columns: auto 34px minmax(0, 1fr);
@@ -591,8 +522,8 @@ button {
   min-width: 0;
 }
 
-.color-field--top {
-  min-width: min(230px, 48vw);
+.color-field--header {
+  width: min(240px, 48vw);
 }
 
 input[type="color"] {
@@ -606,6 +537,18 @@ input[type="color"] {
 
 input[type="color"]:disabled {
   opacity: 0.45;
+}
+
+select {
+  min-width: 0;
+  min-height: 34px;
+  border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+  border-radius: 8px;
+  background: color-mix(in srgb, currentColor 10%, transparent);
+  color: inherit;
+  font: inherit;
+  font-weight: 800;
+  padding: 0 8px;
 }
 
 code {
@@ -622,70 +565,25 @@ code {
   white-space: nowrap;
 }
 
-.toggle-field {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 38px;
-}
-
-.toggle-field input {
-  width: 18px;
-  height: 18px;
-  accent-color: var(--probe-top);
-}
-
 .button-row {
+  display: flex;
+  flex-wrap: wrap;
+  grid-column: 1 / -1;
+  gap: 8px;
   justify-content: flex-end;
 }
 
-.button-row button {
-  flex: 1 1 70px;
-  padding: 0 10px;
-}
-
-.probe-content {
-  max-width: 760px;
-  margin: 0 auto;
-}
-
-.readout {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.readout div,
-.scroll-rows span {
-  border: 1px solid color-mix(in srgb, var(--probe-page-text) 18%, transparent);
+button {
+  min-height: 38px;
+  border: 1px solid color-mix(in srgb, currentColor 28%, transparent);
   border-radius: 8px;
-  background: color-mix(in srgb, var(--probe-page) 78%, transparent);
-}
-
-.readout div {
-  display: grid;
-  gap: 8px;
-  min-width: 0;
-  padding: 10px;
-}
-
-.hint {
-  max-width: 540px;
-  padding: 28px 0;
-  font-size: clamp(1.3rem, 5vw, 2.5rem);
-  font-weight: 850;
-  line-height: 1.05;
-}
-
-.scroll-rows {
-  display: grid;
-  gap: 10px;
-}
-
-.scroll-rows span {
-  display: block;
-  padding: 18px;
+  background: color-mix(in srgb, currentColor 10%, transparent);
+  color: inherit;
+  font: inherit;
+  font-size: 0.86rem;
   font-weight: 800;
+  padding: 0 12px;
+  cursor: pointer;
 }
 
 .copy-toast {
@@ -703,15 +601,18 @@ code {
 }
 
 @media (max-width: 820px) {
-  .top-edge__main,
-  .bottom-edge,
-  .readout {
-    grid-template-columns: 1fr;
-  }
-
-  .top-edge__main {
+  .test-header {
     align-items: flex-start;
     flex-direction: column;
+    min-height: 136px;
+  }
+
+  .test-header h1 {
+    font-size: 2rem;
+  }
+
+  .color-field--header {
+    width: 100%;
   }
 
   .bottom-edge {
@@ -720,6 +621,10 @@ code {
 
   .button-row {
     justify-content: stretch;
+  }
+
+  .button-row button {
+    flex: 1 1 86px;
   }
 }
 </style>
